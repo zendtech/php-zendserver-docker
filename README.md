@@ -9,10 +9,10 @@ Usage
 Zend Server is shared on [Docker-Hub] as **php-zendserver**. 
 - To start a single Zend Server instance, execute: 
 
-`docker run php-zendserver`. 
+`docker run php-zendserver` 
 - To start a Zend Server cluster, execute the following command for each cluster node: 
 
- `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend php-zendserver`. 
+ `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend php-zendserver` 
 
 #### Launching the Container from Dockerfile
 
@@ -21,10 +21,10 @@ Zend Server is shared on [Docker-Hub] as **php-zendserver**.
 ` docker build . `
 - To start a single Zend Server instance, execute: 
 
-`docker run <image-id>`.
+`docker run <image-id>`
 - To start a Zend Server cluster, execute the following command on each cluster node:
 
- `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend <image-id>`. 
+ `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend <image-id>` 
 
 #### Accessing Zend server
 Once started, the container will output the information required to access the PHP application and the Zend Server UI, including an automatically generated admin password.
