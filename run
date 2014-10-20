@@ -5,7 +5,6 @@ ZEND_LICENSE_ORDER=docker-zs
 ZEND_LICENSE_KEY=LNUO7341801G21E2B0165435BC41FBDF
 fi
 if [ -z $ZS_ADMIN_PASSWORD ]; then
-    # Generate a Zend Server admin password if one was not specificed in the manifest
     ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
     echo $ZS_ADMIN_PASSWORD > /root/zend-password
 fi
