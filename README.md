@@ -1,42 +1,44 @@
 PHP-ZendServer
 ==============
-This is a cluster enabled version of a Dockerized Zend Server 7.0 container.
+This is a cluster-enabled version of a Dockerized Zend Server 7.0 container.
+With Zend Server on Docker, your PHP applications will be up and running on a highly available PHP production environment which includes, amongst other features, a highly reliable PHP stack, application monitoring, troubleshooting, and the new and innovative new technology - Z-Ray. Z-Ray gives developers unprecedented visibility into their code by tracking and displaying in a toolbar live and detailed info on how the various elements constructing their page are performing.
 
 Usage
 -----
-#### From Docker-Hub
+#### Launching the Container from Docker-Hub
 Zend Server is shared on [Docker-Hub] as **php-zendserver**. 
-- To start a single, standalone instance, execute: `docker run php-zendserver`. 
-- To start a multi-instance cluster, execute the following command for each cluster node: 
+- To start a single Zend Server instance, execute: `docker run php-zendserver`. 
+- To start a Zend Server cluster, execute the following command for each cluster node: 
 
  `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend php-zendserver`. 
 
-####From Dockerfile
+#### Launching the Container from Dockerfile
 
-- From a local folder containing this repo's clone, execute ` docker build . ` to generate the image. the **image-id** will be outputted.
-- Start a Zend Server single instance by executing: `docker run <image-id>`.
-- Alternatively, start a cluster by executing the following command on each cluster node:
+- From a local folder containing this repo's clone, execute ` docker build . ` to generate the image. The **image-id** will be outputted.
+- To start a single Zend Server instance, execute: `docker run <image-id>`.
+- To start a Zend Server cluster, execute the following command on each cluster node:
 
  `docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend <image-id>`. 
 
 #### Accessing Zend server
-Once started, the container will output the information required to access the PHP application and Zend Server's web UI, including an automatically generated admin password.
+Once started, the container will output the information required to access the PHP application and the Zend Server UI, including an automatically generated admin password.
 
-To access the container **remotely**, port forwarding must be configured. either manually or at docker execution.
-For example, here is a run command with a redirect of port 80 to port 88, and port 10081 (Zend Server UI) to port 10088:
+To access the container **remotely**, port forwarding must be configured, either manually or using docker.
+For example, this command redirects port 80 to port 88, and port 10081 (Zend Server UI port) to port 10088:
 
 `docker run -p 88:80 -p 10088:10081 php-zendserver`
 
 For clustered instances:
 
-
 `docker run -p 88:80 -p 10088:10081 -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend <image-id>`
 
-Please note that when running multiple instances only one instance can be bound to a port.
-In case you are running a cluster either assign a port redirect to one node only, or assign a different port to each container.
+Please note, that when running multiple instances only one instance can be bound to a port.
+If you are running a cluster, either assign a port redirect to one node only, or assign a different port to each container.
 
 #### Env variables
-Env variables are passed in the run command with the "-e" switch. optional env-variables include:
+Env variables are passed in the run command with the "-e" switch. 
+
+##### Optional env-variables:
 
 To specify a pre-defined admin password for Zend Server use:
 - ZS_ADMIN_PASSWORD
@@ -46,7 +48,7 @@ MySQL vars for clustered ops. *ALL* are required for the node to properly join a
 -  MYSQL_PORT - MySQL listening port
 -  MYSQL_USERNAME 
 -  MYSQL_PASSWORD
--  MYSQL_DBNAME - Name of the database Zend Server will use for cluster ops. created automatically if does not exist.
+-  MYSQL_DBNAME - Name of the database Zend Server will use for cluster ops (created automatically if it does not exist).
 
 To specify a pre-purchased license use the following env vars:
 - ZEND_LICENSE_KEY
