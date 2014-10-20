@@ -21,8 +21,8 @@ if [ -z $WEB_API_KEY ]; then
 echo "Bootstrapping single server"
 $ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
 
-WEB_API_KEY=`cut -s -f 1 /root/api_key`
-WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key`
+WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
+WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key 2> /dev/null`
 
 fi
 if [[ -n $MYSQL_HOSTNAME && -n $MYSQL_PORT && -n $MYSQL_USERNAME && -n $MYSQL_PASSWORD && -n $MYSQL_DBNAME ]]; then
