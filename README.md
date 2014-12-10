@@ -11,8 +11,8 @@ Zend Server is shared on [Docker-Hub] as **php-zendserver**.
 
         $ docker run php-zendserver
 
-- You can specify the PHP and Zend Server version by adding ':<php-version>' or ':&lt;ZS-version&gt;-php&lt;version&gt;'  to the 'docker run' command. Availible PHP version are 5.4 & 5.5 (5.5 is the default) and Zend Server 8
-(for example: php-zendserver:8.0-php5.4).
+- You can specify the PHP and Zend Server version by adding ':<php-version>' or ':&lt;ZS-version&gt;-php&lt;version&gt;'  to the 'docker run' command. Availible PHP version are 5.5 & 5.6 (5.6 is the default) and Zend Server 8
+(for example: php-zendserver:8.0-php5.6).
 
 - To start a Zend Server cluster, execute the following command for each cluster node:
 
