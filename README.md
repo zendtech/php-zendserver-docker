@@ -47,6 +47,11 @@ For clustered instances:
 Please note, that when running multiple instances only one instance can be bound to a port.
 If you are running a cluster, either assign a port redirect to one node only, or assign a different port to each container.
 
+#### Adding application files
+Application files can be automatically added by placing them in the "app/" folder.
+The files will be copied to the containers /var/www/html folder and defined in Zend Server as the default app.
+An example index.html file is included. this feature is available in Zend Server 8 and above.
+
 #### Env variables
 Env variables are passed in the run command with the "-e" switch.
 
