@@ -21,6 +21,11 @@ mkdir /usr/local/zend/var/zray/extensions/Docker 2> /dev/null
 cp /root/logo.png /usr/local/zend/var/zray/extensions/Docker/
 cp /root/zray.php /usr/local/zend/var/zray/extensions/Docker/
 
+#Debug
+sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
+sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
+sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
+
 
 service zend-server start
 WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
@@ -60,6 +65,14 @@ Your admin password is `cat /root/zend-password`"
 /usr/local/zend/bin/php /usr/local/bin/sanity.php $WEB_API_KEY_HASH &
 
 exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY $WEB_API_KEY_HASH
+fi
+
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
 fi
 
 #Define Default application
