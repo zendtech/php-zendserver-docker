@@ -12,10 +12,11 @@ RUN apt-get update && apt-get install -y git zend-server-php-5.5 && /usr/local/z
 
 COPY ./scripts /usr/local/bin
 COPY ./libmysqlclient.so.18 /usr/lib/x86_64-linux-gnu/
+COPY ./Zray /usr/local/zend/var/zray/extensions/
+#COPY ./logo.png /root/
+#COPY ./zray.php /root/
 
-COPY ./logo.png /root/
-COPY ./zray.php /root/
-
+RUN rm /var/www/html/index.html
 COPY ./app /var/www/html
 
 EXPOSE 80

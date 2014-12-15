@@ -1,0 +1,29 @@
+<div style="padding: 40px;">
+	<div style="font-weight: bold; padding-bottom: 20px;">Container Info</div>
+	<table>
+		<tr>
+			<td style="width: 400px;">
+				Container internal IP
+			</td>
+			<td>
+				<?php echo $_SERVER['SERVER_ADDR'];?>
+			</td>
+		</tr>
+                <tr>
+                        <td>
+                                Remote Address 
+                        </td>
+                        <td>
+                                <?php echo $_SERVER['REMOTE_ADDR'];?>
+                        </td>
+                </tr>
+                <tr>
+                        <td>
+                                Container ID
+                        </td>
+                        <td>
+                                <?php echo gethostname();?>
+                        </td>
+                </tr>
+	</table>
+</div>

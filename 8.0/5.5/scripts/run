@@ -7,7 +7,7 @@ fi
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
 if [ -z $ZS_ADMIN_PASSWORD ]; then
-    ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
+	ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
     echo $ZS_ADMIN_PASSWORD > /root/zend-password
 fi
 fi
@@ -16,16 +16,10 @@ HOSTNAME=`hostname`
 APP_UNIQUE_NAME=$HOSTNAME
 APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
 
-# Add Docker Z-Ray extention
-mkdir /usr/local/zend/var/zray/extensions/Docker 2> /dev/null
-cp /root/logo.png /usr/local/zend/var/zray/extensions/Docker/
-cp /root/zray.php /usr/local/zend/var/zray/extensions/Docker/
-
 #Debug
 sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
 sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
 sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
-
 
 service zend-server start
 WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
@@ -52,6 +46,17 @@ MYSQL_DBNAME=$MYSQL_DBNAME" >> /root/zend_cluster.sh
 
 eval `cat /root/zend_cluster.sh`
 $ZS_MANAGE store-directive -d 'session.save_handler' -v 'cluster' -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
+fi
+
+#Define Default application
+/usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
 
 echo "restarting Zend Server"
 $ZS_MANAGE restart -p -N $WEB_API_KEY -K $WEB_API_KEY_HASH
