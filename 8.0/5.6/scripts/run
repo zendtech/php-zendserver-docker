@@ -7,7 +7,7 @@ fi
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
 if [ -z $ZS_ADMIN_PASSWORD ]; then
-    ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
+	ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
     echo $ZS_ADMIN_PASSWORD > /root/zend-password
 fi
 fi
@@ -16,19 +16,24 @@ HOSTNAME=`hostname`
 APP_UNIQUE_NAME=$HOSTNAME
 APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
 
-# Add Docker Z-Ray extention
-mkdir /usr/local/zend/var/zray/extensions/Docker 2> /dev/null
-cp /root/logo.png /usr/local/zend/var/zray/extensions/Docker/
-cp /root/zray.php /usr/local/zend/var/zray/extensions/Docker/
+#Grant permissions on Apache logs
+usermod -a -G adm zend
 
+#Debug
+sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
+sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
+sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
 
 service zend-server start
 WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
 WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key 2> /dev/null`
 if [ -z $WEB_API_KEY ]; then
 echo "Bootstrapping single server"
-$ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
-
+if [ -z $ZS_PRODUCTION ]; then
+$ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -r 'FALSE' -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
+else
+$ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -r 'TRUE' -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
+fi
 WEB_API_KEY=`cut -s -f 1 /root/api_key`
 WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key`
 
@@ -45,6 +50,16 @@ MYSQL_DBNAME=$MYSQL_DBNAME" >> /root/zend_cluster.sh
 eval `cat /root/zend_cluster.sh`
 $ZS_MANAGE store-directive -d 'session.save_handler' -v 'cluster' -N $WEB_API_KEY -K $WEB_API_KEY_HASH
 
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
+fi
+
+#Define Default application
+/usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
 
 echo "restarting Zend Server"
 $ZS_MANAGE restart -p -N $WEB_API_KEY -K $WEB_API_KEY_HASH
@@ -58,6 +73,14 @@ Your admin password is `cat /root/zend-password`"
 /usr/local/zend/bin/php /usr/local/bin/sanity.php $WEB_API_KEY_HASH &
 
 exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY $WEB_API_KEY_HASH
+fi
+
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
 fi
 
 #Define Default application
