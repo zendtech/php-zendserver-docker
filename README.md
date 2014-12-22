@@ -48,7 +48,7 @@ Please note, that when running multiple instances only one instance can be bound
 If you are running a cluster, either assign a port redirect to one node only, or assign a different port to each container.
 
 #### Adding application files
-Application files can be automatically added by placing them in the "app/" folder.
+Application files can be automatically pulled from a Git repo (set the GIT_URL env var to the repo's URL), or by placing them in the "app/" folder.
 The files will be copied to the containers /var/www/html folder and defined in Zend Server as the default app.
 An example index.html file is included. this feature is available in Zend Server 8 and above.
 
@@ -59,6 +59,9 @@ Env variables are passed in the run command with the "-e" switch.
 
 To specify a pre-defined admin password for Zend Server use:
 - ZS_ADMIN_PASSWORD
+
+Automatically Deploy an app from Git URL:
+- GIT_URL 
 
 MySQL vars for clustered ops. *ALL* are required for the node to properly join a cluster:
 -  MYSQL_HOSTNAME - ip or hostname of MySQL database
