@@ -16,6 +16,15 @@ HOSTNAME=`hostname`
 APP_UNIQUE_NAME=$HOSTNAME
 APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
 
+# Use OpenShift services if applicable
+if [[ -n $MYSQL_SERVICE_HOST ]]; then
+MYSQL_HOSTNAME=$MYSQL_SERVICE_HOST
+MYSQL_PORT=$MYSQL_SERVICE_PORT
+MYSQL_PASSWORD=$MYSQL_ROOT_PASSWORD
+MYSQL_USERNAME=root
+MYSQL_DBNAME=zend
+fi
+
 #Grant permissions on Apache logs
 usermod -a -G adm zend
 
@@ -49,6 +58,11 @@ MYSQL_DBNAME=$MYSQL_DBNAME" >> /root/zend_cluster.sh
 
 eval `cat /root/zend_cluster.sh`
 $ZS_MANAGE store-directive -d 'session.save_handler' -v 'cluster' -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+
+# Set ZRay URL to OpenShift service if applicable
+if [[ -n $MYSQL_SERVICE_HOST ]]; then
+$ZS_MANAGE store-directive -d 'zray.zendserver_ui_url' -v "http://$FRONTEND_ZS_SERVICE_HOST:$FRONTEND_ZS_SERVICE_PORT/ZendServer" -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+fi
 
 #Import app from Git
 if [[ -n $GIT_URL ]]; then
