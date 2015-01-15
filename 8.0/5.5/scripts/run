@@ -2,7 +2,7 @@
 
 if [[ -z $ZEND_LICENSE_ORDER || -z $ZEND_LICENSE_KEY ]]; then
 ZEND_LICENSE_ORDER=docker-zs
-ZEND_LICENSE_KEY=4GU87J41841G21E2B01669242FB8E55B
+ZEND_LICENSE_KEY=I2S87J41841G21E2B016CC232AA5A20F
 fi
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
@@ -29,9 +29,9 @@ fi
 usermod -a -G adm zend
 
 #Debug
-sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
-sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
-sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
+#sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
 
 service zend-server start
 WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
