@@ -2,7 +2,7 @@
 
 if [[ -z $ZEND_LICENSE_ORDER || -z $ZEND_LICENSE_KEY ]]; then
 ZEND_LICENSE_ORDER=docker-zs
-ZEND_LICENSE_KEY=I2S87J41841G21E2B016CC232AA5A20F
+ZEND_LICENSE_KEY=B01G7J41801G21E2B016E4CCC2351803
 fi
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
@@ -84,8 +84,6 @@ Your application is available at http://$APP_IP
 To access Zend Server, navigate to http://$APP_IP:10081
 Your admin password is `cat /root/zend-password`"
 
-/usr/local/zend/bin/php /usr/local/bin/sanity.php $WEB_API_KEY_HASH &
-
 exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY $WEB_API_KEY_HASH
 fi
 
@@ -106,7 +104,5 @@ echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
 To access Zend Server, navigate to http://$APP_IP:10081
 Your admin password is `cat /root/zend-password`"
-
-/usr/local/zend/bin/php /usr/local/bin/sanity.php $WEB_API_KEY_HASH &
 
 exec /usr/local/bin/nothing

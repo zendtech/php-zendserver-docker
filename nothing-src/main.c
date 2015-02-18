@@ -153,10 +153,6 @@ int main(int argc, const char *argv[])
                 }
             }
         }
-        /* Daemon sanity check */
-        fprintf(stderr,"Calling Sanity\n");
-	sprintf(sanity,"/usr/local/zend/bin/php /usr/local/bin/sanity.php %s",params.web_api_key);
-	system(sanity);
         /* waitpid call to prevent zombie processes */
         waitpid(-1,&status,WNOHANG);
 	sleep(MY_SLEEP_SECONDS);
