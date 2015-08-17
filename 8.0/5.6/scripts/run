@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Generate password if none was set
 if [ -z $ZEND_ADMIN_PASSWORD ]; then
 	ZEND_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
 if [ -z $ZEND_ADMIN_PASSWORD ]; then
@@ -7,6 +8,12 @@ if [ -z $ZEND_ADMIN_PASSWORD ]; then
     echo $ZEND_ADMIN_PASSWORD > /root/zend-password
 fi
 fi
+
+#Bootstrap in development mode unless instructed otherwise 
+if [ -z $ZEND_BOOTSTRAP_PRODUCTION ]; then
+	export ZEND_BOOTSTRAP_PRODUCTION=0
+fi
+
 ZEND_MANAGE=/usr/local/zend/bin/zs-manage
 HOSTNAME=`hostname`
 APP_UNIQUE_NAME=$HOSTNAME
@@ -25,12 +32,12 @@ APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f
 usermod -a -G adm zend
 
 #Debug
-sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
-sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
-sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
-sed -i 's/zend_jobqueue.daemon.log_verbosity_level=2/zend_jobqueue.daemon.log_verbosity_level=5/' /usr/local/zend/etc/jqd.ini
-sed -i 's/zend_monitor.daemon.log_verbosity_level=2/zend_monitor.daemon.log_verbosity_level=5/' /usr/local/zend/etc/monitor_node.ini
-sed -i 's/zend_deployment.daemon.log_verbosity_level=2/zend_deployment.daemon.log_verbosity_level=5/' /usr/local/zend/etc/zdd.ini
+#sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
+#sed -i 's/zend_jobqueue.daemon.log_verbosity_level=2/zend_jobqueue.daemon.log_verbosity_level=5/' /usr/local/zend/etc/jqd.ini
+#sed -i 's/zend_monitor.daemon.log_verbosity_level=2/zend_monitor.daemon.log_verbosity_level=5/' /usr/local/zend/etc/monitor_node.ini
+#sed -i 's/zend_deployment.daemon.log_verbosity_level=2/zend_deployment.daemon.log_verbosity_level=5/' /usr/local/zend/etc/zdd.ini
 
 #service zend-server start
 #WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
