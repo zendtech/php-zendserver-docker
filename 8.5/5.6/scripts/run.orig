@@ -1,0 +1,108 @@
+#!/bin/bash
+
+if [[ -z $ZEND_LICENSE_ORDER || -z $ZEND_LICENSE_KEY ]]; then
+ZEND_LICENSE_ORDER=docker-zs
+ZEND_LICENSE_KEY=B01G7J41801G21E2B016E4CCC2351803
+fi
+if [ -z $ZS_ADMIN_PASSWORD ]; then
+	ZS_ADMIN_PASSWORD=`cat /root/zend-password 2> /dev/null`
+if [ -z $ZS_ADMIN_PASSWORD ]; then
+	ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
+    echo $ZS_ADMIN_PASSWORD > /root/zend-password
+fi
+fi
+ZS_MANAGE=/usr/local/zend/bin/zs-manage
+HOSTNAME=`hostname`
+APP_UNIQUE_NAME=$HOSTNAME
+APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
+
+# Use OpenShift services if applicable
+if [[ -n $MYSQL_SERVICE_HOST ]]; then
+MYSQL_HOSTNAME=$MYSQL_SERVICE_HOST
+MYSQL_PORT=$MYSQL_SERVICE_PORT
+MYSQL_PASSWORD=$MYSQL_ROOT_PASSWORD
+MYSQL_USERNAME=root
+MYSQL_DBNAME=zend
+fi
+
+#Grant permissions on Apache logs
+usermod -a -G adm zend
+
+#Debug
+#sed -i 's/zend_gui.debugModeEnabled = false/zend_gui.debugModeEnabled = true/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_gui.logVerbosity = NOTICE/zend_gui.logVerbosity = DEBUG/' /usr/local/zend/gui/config/zs_ui.ini
+#sed -i 's/zend_server_daemon.log_verbosity_level=2/zend_server_daemon.log_verbosity_level=5/' /usr/local/zend/etc/zsd.ini
+
+service zend-server start
+WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
+WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key 2> /dev/null`
+if [ -z $WEB_API_KEY ]; then
+echo "Bootstrapping single server"
+if [ -z $ZS_PRODUCTION ]; then
+$ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -r 'FALSE' -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
+else
+$ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -r 'TRUE' -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
+fi
+WEB_API_KEY=`cut -s -f 1 /root/api_key`
+WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key`
+
+fi
+if [[ -n $MYSQL_HOSTNAME && -n $MYSQL_PORT && -n $MYSQL_USERNAME && -n $MYSQL_PASSWORD && -n $MYSQL_DBNAME ]]; then
+echo "Joining cluster"
+$ZS_MANAGE server-add-to-cluster -T 120 -n $APP_UNIQUE_NAME -i $APP_IP -o $MYSQL_HOSTNAME:$MYSQL_PORT -u $MYSQL_USERNAME -p $MYSQL_PASSWORD -d $MYSQL_DBNAME -N $WEB_API_KEY -K $WEB_API_KEY_HASH -s| sed -e 's/ //g' > /root/zend_cluster.sh
+echo "MYSQL_HOSTNAME=$MYSQL_HOSTNAME
+MYSQL_PORT=$MYSQL_PORT
+MYSQL_USERNAME=$MYSQL_USERNAME
+MYSQL_PASSWORD=$MYSQL_PASSWORD
+MYSQL_DBNAME=$MYSQL_DBNAME" >> /root/zend_cluster.sh
+
+eval `cat /root/zend_cluster.sh`
+$ZS_MANAGE store-directive -d 'session.save_handler' -v 'cluster' -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+
+# Set ZRay URL to OpenShift service if applicable
+if [[ -n $MYSQL_SERVICE_HOST ]]; then
+$ZS_MANAGE store-directive -d 'zray.zendserver_ui_url' -v "http://$FRONTEND_ZS_SERVICE_HOST:$FRONTEND_ZS_SERVICE_PORT/ZendServer" -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+fi
+
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
+fi
+
+#Define Default application
+/usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
+
+echo "restarting Zend Server"
+$ZS_MANAGE restart -p -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+
+
+echo "Zend Server is ready for use
+Your application is available at http://$APP_IP
+To access Zend Server, navigate to http://$APP_IP:10081
+Your admin password is `cat /root/zend-password`"
+
+exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY $WEB_API_KEY_HASH
+fi
+
+#Import app from Git
+if [[ -n $GIT_URL ]]; then
+echo "Fetching app from git $GIT_URL"
+mkdir /root/git/
+git clone $GIT_URL /root/git/
+mv /root/git/* /var/www/html/
+fi
+
+#Define Default application
+/usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
+
+echo "restarting ZS"
+$ZS_MANAGE restart -p -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+echo "Zend Server is ready for use
+Your application is available at http://$APP_IP
+To access Zend Server, navigate to http://$APP_IP:10081
+Your admin password is `cat /root/zend-password`"
+
+exec /usr/local/bin/nothing
