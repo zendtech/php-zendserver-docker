@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y libmysqlclient18 unzip git zend-server-
 
 COPY ./zend.lic /etc/
 
-ADD http://repos.zend.com/zs-init/zs-init-docker-0.2.tar.gz .
+COPY ./zs-init-docker-0.2.tar.gz .
 RUN mkdir /usr/local/zs-init && tar xzf zs-init-docker-0.2.tar.gz --strip-components=1 -C /usr/local/zs-init
 
 WORKDIR /usr/local/zs-init
