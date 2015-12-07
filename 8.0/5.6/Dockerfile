@@ -36,4 +36,6 @@ EXPOSE 443
 EXPOSE 10081
 EXPOSE 10082
 
+WORKDIR /var/www/html
+
 CMD ["/usr/local/bin/run"]

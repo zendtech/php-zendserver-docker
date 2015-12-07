@@ -23,4 +23,6 @@ EXPOSE 10060
 EXPOSE 10061
 EXPOSE 10062
 
+WORKDIR /var/www/html
+
 CMD ["/usr/local/bin/run"]
