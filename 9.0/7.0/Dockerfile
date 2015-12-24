@@ -19,7 +19,7 @@ RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \
     && mkdir /usr/local/zs-init \
     && tar xzf zs-init.tar.gz --strip-components=1 -C /usr/local/zs-init \
-    && rm zs-init.tar.gz
+    && rm zs-init.tar.gz 
 
 WORKDIR /usr/local/zs-init
 RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php
@@ -36,4 +36,5 @@ EXPOSE 443
 EXPOSE 10081
 EXPOSE 10082
 
+WORKDIR /var/www/html
 CMD ["/usr/local/bin/run"]
