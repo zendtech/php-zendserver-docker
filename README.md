@@ -3,6 +3,8 @@ PHP-ZendServer
 This is a cluster-enabled version of a Dockerized Zend Server 8.0 container.
 With Zend Server on Docker, you'll get your PHP applications up and running on a highly available PHP production environment which includes, amongst other features, a highly reliable PHP stack, application monitoring, troubleshooting, and the new and innovative new technology - Z-Ray. Z-Ray gives developers unprecedented visibility into their code by tracking and displaying in a toolbar live and detailed info on how the various elements constructing their page are performing.
 
+For development purposes we provide you with a trial license that is valid until 31/07/2016. For production use you must provide a valid Zend Server license using the instructions below in the Usage section.
+
 Usage
 -----
 #### Launching the Container from Docker-Hub
@@ -17,7 +19,8 @@ Zend Server is shared on [Docker-Hub] as **php-zendserver**.
 - To start a Zend Server cluster, execute the following command for each cluster node:
 
         $ docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend php-zendserver
-
+- To use your own Zend Server license
+        $ docker run php-zendserver -e ZEND_LICENSE_KEY=<license-key> -e ZEND_LICENSE_ORDER=<order-number>
 #### Launching the Container from Dockerfile
 
 - From a local folder containing this repo's clone, execute the following command to generate the image. The **image-id** will be outputted:
@@ -31,6 +34,9 @@ Zend Server is shared on [Docker-Hub] as **php-zendserver**.
 - To start a Zend Server cluster, execute the following command on each cluster node:
 
         $ docker run -e MYSQL_HOSTNAME=<db-ip> -e MYSQL_PORT=3306 -e MYSQL_USERNAME=<username> -e MYSQL_PASSWORD=<password> -e MYSQL_DBNAME=zend <image-id>
+
+#### Specifying License details
+If you wish to bring your own license you can do so by setting the following environment variables:
 
 #### Accessing Zend server
 Once started, the container will output the information required to access the PHP application and the Zend Server UI, including an automatically generated admin password.
