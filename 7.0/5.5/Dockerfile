@@ -10,7 +10,6 @@ FROM ubuntu:14.04
 RUN apt-get update && apt-get install -y libc6
 RUN apt-get -y dist-upgrade
 
-
 COPY ./run /usr/local/bin/run
 COPY ./nothing /usr/local/bin/nothing
 COPY ./libmysqlclient.so.18 /usr/lib/x86_64-linux-gnu/
