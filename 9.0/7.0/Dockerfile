@@ -4,12 +4,9 @@
 
 FROM ubuntu:14.04
 
-RUN apt-get -y dist-upgrade #Update base ubuntu image to resolve  
-
 RUN apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 RUN echo "deb http://repos.zend.com/zend-server/early-access/zs-php7-tech-preview2/Linux/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
 RUN apt-get update && apt-get install -y libmysqlclient18 unzip git zend-server-php-7.0 && /usr/local/zend/bin/zendctl.sh stop 
-RUN apt-get update && apt-get install libc6
 
 
 COPY ./zend.lic /etc/
