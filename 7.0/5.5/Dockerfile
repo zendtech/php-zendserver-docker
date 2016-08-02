@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y zend-server-php-5.5 && /usr/local/zend/
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
 COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
 RUN  /usr/sbin/a2enconf drop-http-proxy-header
+RUN  /usr/sbin/a2enmod headers
 
 
 EXPOSE 80
