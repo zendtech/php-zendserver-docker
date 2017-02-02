@@ -1,0 +1,6 @@
+version: '2'
+services:
+  nginx:
+    image: php-zendserver:9.0.1-nginx
+    build:
+      context: 9.0.1/7.0-nginx/
