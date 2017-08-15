@@ -12,7 +12,7 @@ COPY ./zend.lic /etc/
 
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
-ENV ZS_INIT_VERSION 0.2
+ENV ZS_INIT_VERSION 0.3
 ENV ZS_INIT_SHA256 1c5cf557daf48cf018dba1cf46208f215d3b5fab47c73ff2d39988581ebd6932
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \
