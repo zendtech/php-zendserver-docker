@@ -5,7 +5,7 @@
 FROM ubuntu:14.04
 
 RUN echo "deb http://repos.zend.com/zend-server/9.0/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
-RUN apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add -
+RUN apt-get update && apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add -
 RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.0 && /usr/local/zend/bin/zendctl.sh stop 
 
 COPY ./zend.lic /etc/
