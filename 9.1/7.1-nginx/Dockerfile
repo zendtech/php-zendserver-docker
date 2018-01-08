@@ -1,14 +1,20 @@
 # Zend Server
 #
-# Version 9.1.0+b119
+# Version 9.1.2+b144
 
 FROM ubuntu:14.04
 
 RUN echo "deb http://repos.zend.com/zend-server/9.1/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add -
-RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.1=9.1.1+b119 && /usr/local/zend/bin/zendctl.sh stop 
+RUN RUN rm -f /var/lib/apt/lists/*
+RUN apt-get clean && apt-get update && apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add - ; apt-get update
+RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.1=9.1.2+b144 && /usr/local/zend/bin/zendctl.sh stop 
 
-COPY ./zend.lic /etc/
+
+#Copy Zend server license for use during build
+COPY ./zend-trial310618.lic /etc/
+
+#Temporarily copy license file for use on container first run.
+COPY ./zend-trial310618.lic /var/zend.lic.1
 
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker

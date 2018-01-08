@@ -23,6 +23,9 @@ usermod -a -G adm zend
 #sed -i 's/zend_monitor.daemon.log_verbosity_level=2/zend_monitor.daemon.log_verbosity_level=5/' /usr/local/zend/etc/monitor_node.ini
 #sed -i 's/zend_deployment.daemon.log_verbosity_level=2/zend_deployment.daemon.log_verbosity_level=5/' /usr/local/zend/etc/zdd.ini
 
+#Copy default Zend Server license for use during init
+cp /var/zend.lic.1 /etc
+
 #ZDOCK-15 - allow users to bring their own licenses
 /usr/local/bin/modify_license.sh
 
