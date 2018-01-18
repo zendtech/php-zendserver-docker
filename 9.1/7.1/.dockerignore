@@ -1,0 +1,5 @@
+/var/lib/apt/lists/*
+/tmp/*
+/var/tmp/*
+/usr/local/tmp/*
+/usr/local/zend/tmp
