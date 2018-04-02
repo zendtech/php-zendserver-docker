@@ -6,7 +6,7 @@ FROM ubuntu:14.04
 
 RUN apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 RUN echo "deb http://repos.zend.com/zend-server/8.5.8/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y curl libmysqlclient18 unzip git zend-server-php-5.6=8.5.8+b776 && /usr/local/zend/bin/zendctl.sh stop
+RUN apt-get update && apt-get install -y curl libmysqlclient18 unzip git zend-server-php-5.6=8.5.9+b796 && /usr/local/zend/bin/zendctl.sh stop
 
 COPY ./zend.lic /etc/
 
