@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 9.1.2+b144
+# Version 9.1.3+b165
 
 FROM ubuntu:16.04
 
@@ -13,7 +13,7 @@ RUN apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1
       git \
       curl \
       net-tools \
-      zend-server-php-7.1=9.1.2+b144 \
+      zend-server-php-7.1=9.1.3+b165 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
