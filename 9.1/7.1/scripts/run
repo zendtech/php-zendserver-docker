@@ -50,6 +50,9 @@ WEB_API_KEY_HASH=`/usr/local/zs-init/stateValue.php WEB_API_KEY_HASH`
 #Define Default application
 /usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY_NAME --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
 
+#Restart Zend Server components using the "Smart Restart" Strategy
+/usr/local/bin/restart_zs_if_pending.sh
+
 if [[ -n $MYSQL_HOSTNAME && -n $MYSQL_USERNAME && -n $MYSQL_PASSWORD ]]; then
 echo "Adding Node Id to DB table for sigterm handler"
 exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY_NAME $WEB_API_KEY_HASH
