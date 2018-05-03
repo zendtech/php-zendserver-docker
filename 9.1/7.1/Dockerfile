@@ -40,7 +40,7 @@ WORKDIR /usr/local/zs-init
 RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php \
     && /usr/local/zend/bin/php composer.phar update
 
-COPY ./scripts /usr/local/bin
+COPY ./scripts /usr/local/bin 
 #Copy Zray docker plugin
 #TODO: Integrate Zray docker plugin into Zend Server
 COPY ./Zray /usr/local/zend/var/plugins/
