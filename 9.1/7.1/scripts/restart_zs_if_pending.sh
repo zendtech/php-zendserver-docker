@@ -1,11 +1,10 @@
 #!/bin/bash
 
-ZEND_SERVER_PATH='/usr/local/zend'
+ZEND_SERVER_PATH="/usr/local/zend"
 ZSD_FULL_PATH="${ZEND_SERVER_PATH}/bin/zsd"
 ZSD_DB_PATH="${ZEND_SERVER_PATH}/var/db/zsd.db"
 ZSD_DB_CMD="sqlite3 ${ZSD_DB_PATH}"
 
-echo $ZEND_SERVER_PATH
 #Check if any nodes require restart
 NODE_IDS_REQUIRING_RESTART=$(${ZSD_DB_CMD} <<EOF 
 SELECT NODE_ID FROM ZSD_NODES where STATUS_CODE=3;
