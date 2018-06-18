@@ -55,8 +55,10 @@ echo "Adding Node Id to DB table for sigterm handler"
 exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY_NAME $WEB_API_KEY_HASH
 fi
 
+#Sleep 12 seconds to allow background tasks to complete
+#Run the command in the background so that container starts quickly
+(sleep 12 ; /usr/local/bin/restart_zs_if_pending.sh || /usr/local/bin/restart_zs_if_pending.sh) &
 #Restart Zend Server components using the "Smart Restart" Strategy
-sleep 12
-/usr/local/bin/restart_zs_if_pending.sh || /usr/local/bin/restart_zs_if_pending.sh 
+
 
 exec /usr/local/bin/nothing
