@@ -1,19 +1,23 @@
 # Zend Server
 #
-# Version 2018.0.3+b165
+# Version 2018.0.0+b2002
 
 FROM ubuntu:16.04
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623 \
-    && echo "deb http://repos.zend.com/zend-server/2018.0/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list \
-    && apt-get update \
+#apt-get is run twice to allow installing gnupg which is required for apt-key
+
+RUN apt-get update \
+    && apt-get -y install gnupg wget aptitude\
+    && wget http://downloads.zend.com/zendserver/2018.0.0/ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
+    && tar xf ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
+    && cd ZendServer-RepositoryInstaller-linux \
+    && ./install_zs.sh 7.2 --automatic \
     && apt-get install -y \
       libmysqlclient20 \
       unzip \
       git \
       curl \
       net-tools \
-      zend-server-php-7.2=2018.0.0+b464 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
