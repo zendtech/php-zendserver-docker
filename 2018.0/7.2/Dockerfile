@@ -7,7 +7,7 @@ FROM ubuntu:16.04
 #apt-get is run twice to allow installing gnupg which is required for apt-key
 
 RUN apt-get update \
-    && apt-get -y install gnupg wget aptitude\
+    && apt-get -y install gnupg wget aptitude apt-utils \
     && wget http://downloads.zend.com/zendserver/2018.0.0/ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
     && tar xf ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
     && cd ZendServer-RepositoryInstaller-linux \

@@ -26,6 +26,9 @@ usermod -a -G adm zend
 #ZDOCK-15 - allow users to bring their own licenses
 /usr/local/bin/modify_license.sh
 
+#Drop MYSQL_DATABASE if it has no tables
+/usr/local/clear_empty_db.php $MYSQL_DATABASE
+
 /usr/local/zs-init/init.php
 
 echo "Zend Server is ready for use
@@ -50,9 +53,9 @@ WEB_API_KEY_HASH=`/usr/local/zs-init/stateValue.php WEB_API_KEY_HASH`
 #Define Default application
 /usr/local/zend/bin/zs-client.sh applicationDefine --name=default --baseUrl="http://<default-server>:80/" --zskey=$WEB_API_KEY_NAME --zssecret=$WEB_API_KEY_HASH > /dev/null 2>&1
 
-if [[ -n $MYSQL_HOSTNAME && -n $MYSQL_USERNAME && -n $MYSQL_PASSWORD ]]; then
+if [[ -n $MYSQL_HOSTNAME && -n $MYSQL_USERNAME && -n $MYSQL_PASSWORD && -n $NODE_ID ]]; then
 echo "Adding Node Id to DB table for sigterm handler"
-exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY_NAME $WEB_API_KEY_HASH
+#exec /usr/local/bin/nothing $MYSQL_HOSTNAME $MYSQL_PORT $MYSQL_USERNAME $MYSQL_PASSWORD $MYSQL_DBNAME $NODE_ID $WEB_API_KEY_NAME $WEB_API_KEY_HASH
 fi
 
 exec /usr/local/bin/nothing
