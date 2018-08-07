@@ -1,0 +1,98 @@
+Zend Server Linux Repository Installation Script - README
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+What is Zend Server?
+====================
+Zend Server is a complete, enterprise-ready Web Application Server for running 
+and managing PHP applications that require a high level of reliability, 
+performance and security. 
+
+What is this Package?
+=====================
+The Linux Repository Installation Script package includes a simple shell script
+that automates the process of installing and upgrading Zend Server through 
+Zend's DEB or RPM repositories. 
+
+On supported Linux distributions (see detailed system requirements below), 
+running the ./install_zs.sh script included in this package will perform the 
+following:
+
+* Add Zend's repository to the list of your package manager's (yum or aptitude) 
+  sources list
+
+* If applicable, install Zend's PGP key that will be used to verify the 
+  integrity of downloaded packages before installing them
+
+* Install Zend Server on your system 
+
+Once the installation is complete, you will be able to use your package manager 
+(e.g. yum, aptitude, apt-get etc.) to install additional packages from Zend, 
+update your installation or uninstall packages.
+
+Zend Server and PHP Upgrade Scenarios
+=====================================
+The script upgrades your Zend Server and PHP versions, according to your 
+current configurations and target version passed.
+The script supports the following upgrades:
+- Zend Server 5.6 to current Zend Server 6.x version
+- All Zend Server and PHP upgrades from Zend Server 6.x to current Zend Server 6.x version.
+
+* PHP downgrades are not supported, e.g. from Zend Server 6.x PHP 5.4 to Zend Server 6.x 
+  PHP 5.3. See Limitations below for more inforamtion on which upgrades are not supported. 
+
+Installing or Upgrading Zend Server Using the Linux Repository Installation Script
+==================================================================================
+In order to install Zend Server, change into the directory extracted from this
+package and run the following command, as root or using sudo:
+
+# ./install_zs.sh <PHP_version>
+or:
+$ sudo ./install_zs.sh <PHP_version>
+
+To install Zend Server with nginx using the installation script, run the following commands (DEB and RPM only): 
+# ./install_zs.sh <PHP_version> [nginx]
+
+To install Zend Server with the Zend Java Bridge using the installation script, run the following command:
+# ./install_zs.sh <php_version> [java] 
+
+System Requirements
+===================
+Installing Zend Server through DEB or RPM repositories is supported on the
+following distributions:
+
+DEB repositories:
+* Debian GNU/Linux 6
+* Debian GNU/Linux 7
+* Ubuntu Linux 12.04 (LTS)
+* Ubuntu Linux 14.04 (LTS) with Apache 2.4.
+
+RPM repositories:
+* Red Hat Enterprise Linux 5
+* Red Hat Enterprise Linux 6
+* CentOS 5
+* CentOS 6
+* Oracle Enterprise Linux 5
+* Oracle Enterprise Linux 6
+* SLES 11
+* OpenSUSE 12.x
+
+Limitations
+===========
+The installation script cannot be used in the following scenarios:
+* When attempting to upgrade from Zend Server 6.0 Beta
+* When attempting to upgrade from Zend Server 5.6 with PHP 5.4 Technology Preview
+* When attempting to upgrade from a Zend Server version below 5.6.0
+* When attempting to downgrade a PHP version
+* When attempting to upgrade a Web server (e.g. from Zend Server with Apache to Zend Server with nginx)
+
+Further Information and Documentation
+=====================================
+Additional resources and documentation can be found online, at 
+http://www.zend.com/en/products/server/
+
+
+Thank you for choosing Zend Server
+----------------------------------
+Zend Technologies Ltd.
+http://www.zend.com/
+--

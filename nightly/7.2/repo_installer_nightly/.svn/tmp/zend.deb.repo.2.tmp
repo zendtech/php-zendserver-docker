@@ -1,0 +1,5 @@
+<<<<<<< .mine
+deb http://repos-dev.zend.net/zend-server/nightly/n-1/deb server non-free
+=======
+deb http://repos.zend.com/zend-server/6.2/deb server non-free
+>>>>>>> .r77759

@@ -1,0 +1,18 @@
+# Please edit this file to reflect ZS SUSE zypper repos
+[Zend]
+name=Zend Server 
+baseurl=http://repos-dev.zend.net/zend-server/nightly/sles/$basearch
+type=rpm-md
+enabled=1
+autorefresh=1
+gpgcheck=1
+gpgkey=http://repos.zend.com/zend.key
+
+[Zend_noarch]
+name=Zend Server - noarch
+baseurl=http://repos-dev.zend.net/zend-server/nightly/sles/noarch
+type=rpm-md
+enabled=1
+autorefresh=1
+gpgcheck=1
+gpgkey=http://repos.zend.com/zend.key

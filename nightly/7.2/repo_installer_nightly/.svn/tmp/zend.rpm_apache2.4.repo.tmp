@@ -1,0 +1,21 @@
+[Zend]
+name=Zend Server 
+<<<<<<< .mine
+baseurl=http://repos-dev.zend.net/zend-server/nightly/rpm_apache2.4/$basearch
+=======
+baseurl=http://repos.zend.com/zend-server/8.0/rpm_apache2.4/$basearch
+>>>>>>> .r93809
+enabled=1
+gpgcheck=1
+gpgkey=http://repos.zend.com/zend.key
+
+[Zend_noarch]
+name=Zend Server - noarch
+<<<<<<< .mine
+baseurl=http://repos-dev.zend.net/zend-server/nightly/rpm_apache2.4/noarch
+=======
+baseurl=http://repos.zend.com/zend-server/8.0/rpm_apache2.4/noarch
+>>>>>>> .r93809
+enabled=1
+gpgcheck=1
+gpgkey=http://repos.zend.com/zend.key

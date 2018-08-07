@@ -1,0 +1,6 @@
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=http://nginx.org/keys/nginx_signing.key
