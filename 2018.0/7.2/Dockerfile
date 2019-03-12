@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 2018.0.0+b2002
+# Version 2018.0.3+b24
 
 FROM ubuntu:16.04
 
@@ -8,8 +8,8 @@ FROM ubuntu:16.04
 
 RUN apt-get update \
     && apt-get -y install gnupg wget aptitude apt-utils \
-    && wget http://downloads.zend.com/zendserver/2018.0.0/ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
-    && tar xf ZendServer-2018.0.0-RepositoryInstaller-linux.tar.gz \
+    && wget http://downloads.zend.com/zendserver/2018.0.3/ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
+    && tar xf ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
     && cd ZendServer-RepositoryInstaller-linux \
     && ./install_zs.sh 7.2 --automatic \
     && apt-get install -y \

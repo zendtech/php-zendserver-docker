@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 2018.0.0+b464
+# Version 2018.0.3+b24
 
 FROM ubuntu:16.04
 
