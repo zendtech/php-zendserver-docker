@@ -18,7 +18,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A
     && /usr/local/zend/bin/zendctl.sh stop
 
 #Set default license
-COPY ./zend.lic /etc/
+COPY ./zend.lic  /etc/
 
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
 COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
