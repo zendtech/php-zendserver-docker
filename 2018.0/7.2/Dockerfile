@@ -9,16 +9,18 @@ FROM ubuntu:16.04
 RUN apt-get update \
     && apt-get -y install gnupg wget aptitude apt-utils \
     && wget http://downloads.zend.com/zendserver/2018.0.3/ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
+    && echo "8b17143a1611a1d7a17d5494876079e300ee730e4e9b585c1b1a821777de2cc2 ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz" | sha256sum -c - \
     && tar xf ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
-    && cd ZendServer-RepositoryInstaller-linux \
+    && pushd ZendServer-RepositoryInstaller-linux \
     && ./install_zs.sh 7.2 --automatic \
+    && popd
     && apt-get install -y \
       libmysqlclient20 \
       unzip \
       git \
       curl \
       net-tools \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/* ZendServer-RepositoryInstaller-linux ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
     && /usr/local/zend/bin/zendctl.sh stop
 
 #Set default license
