@@ -13,7 +13,7 @@ RUN apt-get update \
     && tar xf ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
     && pushd ZendServer-RepositoryInstaller-linux \
     && ./install_zs.sh 7.2 --automatic \
-    && popd
+    && popd \
     && apt-get install -y \
       libmysqlclient20 \
       unzip \
