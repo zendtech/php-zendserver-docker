@@ -4,23 +4,16 @@
 
 FROM ubuntu:16.04
 
-#apt-get is run twice to allow installing gnupg which is required for apt-key
-
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
+COPY zs2018_0-apache2_4.list /etc/apt/sources.list.d/zend-server.list
 RUN apt-get update \
-    && apt-get -y install gnupg wget aptitude apt-utils \
-    && wget http://downloads.zend.com/zendserver/2018.0.3/ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
-    && echo "8b17143a1611a1d7a17d5494876079e300ee730e4e9b585c1b1a821777de2cc2 ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz" | sha256sum -c - \
-    && tar xf ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
-    && cd ZendServer-RepositoryInstaller-linux \
-    && ./install_zs.sh 7.2 --automatic \
-    && cd .. \
     && apt-get install -y \
+      curl \
       libmysqlclient20 \
       unzip \
       git \
-      curl \
-      net-tools \
-    && rm -rf /var/lib/apt/lists/* ZendServer-RepositoryInstaller-linux ZendServer-2018.0.3-RepositoryInstaller-linux.tar.gz \
+      zend-server-php-7.2=2018.0.3+b24 \
+    && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
 #Set default license
@@ -28,11 +21,11 @@ COPY ./zend.lic /etc/
 
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
 COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
-RUN  /usr/sbin/a2enconf drop-http-proxy-header \
-     && /usr/sbin/a2enmod headers
+RUN  /usr/sbin/a2enconf drop-http-proxy-header
+RUN  /usr/sbin/a2enmod headers
 
 # "zs-init" is a standard Zend Server cloud initialization package.
-# It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/treye/docker
+# It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
 ENV ZS_INIT_VERSION 0.3
 ENV ZS_INIT_SHA256 e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
@@ -43,7 +36,8 @@ RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${
 
 #Install composer and dependencies for zs-init
 WORKDIR /usr/local/zs-init
-RUN  /usr/local/zend/bin/php /usr/local/zend/bin/composer.phar self-update && /usr/local/zend/bin/php /usr/local/zend/bin/composer.phar update
+RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php \
+    && /usr/local/zend/bin/php composer.phar self-update && /usr/local/zend/bin/php composer.phar update
 
 COPY ./scripts /usr/local/bin 
 #Copy Zray docker plugin

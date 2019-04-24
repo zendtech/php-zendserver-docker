@@ -4,10 +4,19 @@
 
 FROM ubuntu:16.04
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623 
-RUN echo "deb http://repos.zend.com/zend-server/8.5.12/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y curl libmysqlclient20 unzip git zend-server-php-5.6=8.5.12+b817 && /usr/local/zend/bin/zendctl.sh stop
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
+COPY zs8_5-apache2_4.list /etc/apt/sources.list.d/zend-server.list
+RUN apt-get update \
+    && apt-get install -y \
+        curl \
+        libmysqlclient20 \
+        unzip \
+        git \
+        zend-server-php-5.6=8.5.12+b817 \
+    && rm -rf /var/lib/apt/lists/* \
+    && /usr/local/zend/bin/zendctl.sh stop
 
+#Set default license
 COPY ./zend.lic /etc/
 
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
@@ -25,11 +34,14 @@ RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${
     && tar xzf zs-init.tar.gz --strip-components=1 -C /usr/local/zs-init \
     && rm zs-init.tar.gz
 
+#Install composer and dependencies for zs-init
 WORKDIR /usr/local/zs-init
-RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php
-RUN /usr/local/zend/bin/php composer.phar update
+RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php \
+    && /usr/local/zend/bin/php composer.phar self-update && /usr/local/zend/bin/php composer.phar update
 
 COPY ./scripts /usr/local/bin
+#Copy Zray docker plugin
+#TODO: Integrate Zray docker plugin into Zend Server
 COPY ./Zray /usr/local/zend/var/plugins/
 
 RUN rm /var/www/html/index.html
