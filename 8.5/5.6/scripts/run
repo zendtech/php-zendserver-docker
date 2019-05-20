@@ -10,7 +10,7 @@ fi
 fi
 
 HOSTNAME=`hostname`
-APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
+APP_IP=`/sbin/ip addr show eth0| grep inet | awk {'print $2'}| cut -d '/' -f 1`
 
 #Grant permissions on Apache logs
 usermod -a -G adm zend
