@@ -12,7 +12,7 @@ RUN apt-get update \
       libmysqlclient20 \
       unzip \
       git \
-      zend-server-php=2019.0.0+b260 \
+      zend-server=2019.0.0+b260 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
