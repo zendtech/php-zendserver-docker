@@ -1,13 +1,13 @@
 # Zend Server
 #
-# Version 9.1.3+b165
+# Version 9.1.9+b197
 
 FROM ubuntu:16.04
 
 RUN echo "deb http://repos.zend.com/zend-server/9.1/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
 RUN RUN rm -f /var/lib/apt/lists/*
 RUN apt-get clean && apt-get update && apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add - ; apt-get update
-RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.1=9.1.3+b165 && /usr/local/zend/bin/zendctl.sh stop 
+RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.1=9.1.9+b197 && /usr/local/zend/bin/zendctl.sh stop 
 
 #Copy Zend server license for use during build
 COPY ./zend.lic /etc/
