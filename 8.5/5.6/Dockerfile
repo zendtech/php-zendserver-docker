@@ -2,7 +2,7 @@
 #
 # Version 8.5.14+b855
 
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 COPY zs8_5-apache2_4.list /etc/apt/sources.list.d/zend-server.list
