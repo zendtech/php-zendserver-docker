@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 8.5.14+b855
+# Version 8.5.15+b8
 
 FROM ubuntu:14.04
 
@@ -12,7 +12,7 @@ RUN apt-get update \
         libmysqlclient20 \
         unzip \
         git \
-        zend-server-php-5.6=8.5.14+b855 \
+        zend-server-php-5.6=8.5.15+b8 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
