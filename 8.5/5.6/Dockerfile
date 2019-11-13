@@ -9,7 +9,7 @@ COPY zs8_5-apache2_4.list /etc/apt/sources.list.d/zend-server.list
 RUN apt-get update \
     && apt-get install -y \
         curl \
-        libmysqlclient20 \
+        libmysqlclient18 \
         unzip \
         git \
         zend-server-php-5.6=8.5.15+b8 \
