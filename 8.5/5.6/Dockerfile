@@ -6,10 +6,11 @@ FROM ubuntu:16.04
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 COPY zs8_5-apache2_4.list /etc/apt/sources.list.d/zend-server.list
+COPY ubuntu-trusty.list /etc/apt/sources.list.d/ubuntu-trusty.list
 RUN apt-get update \
     && apt-get install -y \
         curl \
-        libmysqlclient20 \
+        libmysqlclient18 \
         unzip \
         git \
         zend-server-php-5.6=8.5.15+b8 \
