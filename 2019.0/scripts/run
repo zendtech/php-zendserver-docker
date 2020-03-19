@@ -27,9 +27,9 @@ usermod -a -G adm zend
 /usr/local/bin/modify_license.sh
 
 #Drop MYSQL_DATABASE if it has no tables
-/usr/local/clear_empty_db.php $MYSQL_DATABASE
+#/usr/local/clear_empty_db.php $MYSQL_DATABASE
 
-/usr/local/zs-init/init.php
+php /usr/local/zs-init/init.php
 
 echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
