@@ -29,7 +29,7 @@ usermod -a -G adm zend
 #Drop MYSQL_DATABASE if it has no tables
 #/usr/local/clear_empty_db.php $MYSQL_DATABASE
 
-php /usr/local/zs-init/init.php
+sh -x /usr/local/zs-init/init.php
 
 echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
