@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 2019.0.3+b345
+# Version 2019.0.4+b374
 
 FROM ubuntu:16.04
 
@@ -12,7 +12,7 @@ RUN apt-get update \
       libmysqlclient20 \
       unzip \
       git \
-      zend-server=2019.0.3+b345 \
+      zend-server=2019.0.4+b374 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
