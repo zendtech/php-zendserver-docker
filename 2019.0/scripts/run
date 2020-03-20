@@ -26,7 +26,7 @@ usermod -a -G adm zend
 #ZDOCK-15 - allow users to bring their own licenses
 /usr/local/bin/modify_license.sh
 
-/usr/local/zs-init/init.php
+sudo /usr/local/zs-init/init.php
 
 echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
