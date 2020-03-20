@@ -35,11 +35,11 @@ RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${
     && rm zs-init.tar.gz
 
 #Install composer and dependencies for zs-init
-RUN chmod 755 /usr/local/zs-init
 WORKDIR /usr/local/zs-init
-RUN chmod 755 init.php
 RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php \
     && /usr/local/zend/bin/php composer.phar self-update && /usr/local/zend/bin/php composer.phar update
+
+RUN /usr/local/zs-init/init.php
 
 COPY ./scripts /usr/local/bin 
 #Copy Zray docker plugin
