@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#PHP=`which php`
+PHP=`which php`
 
 #Generate password if none was set
 if [ -z $ZEND_ADMIN_PASSWORD ]; then
@@ -30,7 +30,7 @@ usermod -a -G adm zend
 #Drop MYSQL_DATABASE if it has no tables
 #/usr/local/clear_empty_db.php $MYSQL_DATABASE
 
-#$PHP /usr/local/zs-init/init.php
+$PHP /usr/local/zs-init/init.php
 
 echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
