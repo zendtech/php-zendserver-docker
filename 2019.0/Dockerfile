@@ -39,8 +39,6 @@ WORKDIR /usr/local/zs-init
 RUN /usr/local/zend/bin/php -r "readfile('https://getcomposer.org/installer');" | /usr/local/zend/bin/php \
     && /usr/local/zend/bin/php composer.phar self-update && /usr/local/zend/bin/php composer.phar update
 
-RUN /usr/local/zs-init/init.php
-
 COPY ./scripts /usr/local/bin 
 #Copy Zray docker plugin
 #TODO: Integrate Zray docker plugin into Zend Server
@@ -56,4 +54,5 @@ EXPOSE 10082
 
 WORKDIR /var/www/html
 
+CMD ["/usr/local/zs-init/init.php"]
 CMD ["/usr/local/bin/run"]
