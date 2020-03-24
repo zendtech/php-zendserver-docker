@@ -54,5 +54,4 @@ EXPOSE 10082
 
 WORKDIR /var/www/html
 
-CMD ["/usr/local/zs-init/init.php"]
 CMD ["/usr/local/bin/run"]
