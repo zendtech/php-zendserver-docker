@@ -26,11 +26,6 @@ usermod -a -G adm zend
 #ZDOCK-15 - allow users to bring their own licenses
 /usr/local/bin/modify_license.sh
 
-#/usr/local/zend/bin/zendctl.sh stop
-/usr/local/zend/bin/zendctl.sh start
-
-/usr/local/zs-init/init.php
-
 echo "Zend Server is ready for use
 Your application is available at http://$APP_IP
 To access Zend Server, navigate to http://$APP_IP:10081

@@ -47,6 +47,8 @@ COPY ./Zray /usr/local/zend/var/plugins/
 RUN rm /var/www/html/index.html
 COPY ./app /var/www/html
 
+RUN /usr/local/zs-init/init.php
+
 EXPOSE 80
 EXPOSE 443
 EXPOSE 10081
