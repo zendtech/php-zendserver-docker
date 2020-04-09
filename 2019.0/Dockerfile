@@ -1,18 +1,23 @@
 # Zend Server
 #
-# Version 2019.0.4+b374
+# Version 2019.0.4+b392
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
-COPY zs2019_0-apache2_4.list /etc/apt/sources.list.d/zend-server.list
 RUN apt-get update \
     && apt-get install -y \
+      gnupg
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
+COPY zs2019_0-ssl1.1.list /etc/apt/sources.list.d/zend-server.list
+RUN apt-get update \
+    && apt-get install -y \
+      iproute2 \
       curl \
       libmysqlclient20 \
       unzip \
       git \
-      zend-server=2019.0.4+b374 \
+      zend-server=2019.0.4+b392 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
