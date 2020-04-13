@@ -66,7 +66,7 @@ Env variables are passed in the run command with the "-e" switch.
 ##### Optional env-variables:
 
 To specify a pre-defined admin password for Zend Server use:
-- ZS_ADMIN_PASSWORD
+- ZEND_ADMIN_PASSWORD
 
 Automatically Deploy an app from Git URL:
 - GIT_URL 
