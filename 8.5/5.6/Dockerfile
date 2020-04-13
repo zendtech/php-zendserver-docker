@@ -17,9 +17,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
-#Set default license
-COPY ./zend-201910181158.lic /etc/zend.lic
-
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
 COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
 RUN  /usr/sbin/a2enconf drop-http-proxy-header
