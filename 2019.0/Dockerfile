@@ -5,6 +5,7 @@
 FROM ubuntu:18.04
 
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y \
       gnupg
 
@@ -22,9 +23,9 @@ RUN apt-get update \
     && /usr/local/zend/bin/zendctl.sh stop
 
 #Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
-COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
-RUN  /usr/sbin/a2enconf drop-http-proxy-header
-RUN  /usr/sbin/a2enmod headers
+#COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
+#RUN  /usr/sbin/a2enconf drop-http-proxy-header
+#RUN  /usr/sbin/a2enmod headers
 
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
