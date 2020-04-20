@@ -1,0 +1,12 @@
+--- zs-init-docker-0.3/src/Init/Steps/AbstractStep.php	2017-06-14 13:20:38.000000000 +0300
++++ build-php-zendserver-docker/external_src/php-zendserver-docker/2019.0/zs-init-docker-0.3/src/Init/Steps/AbstractStep.php	2020-04-20 17:54:35.000000000 +0300
+@@ -45,7 +45,8 @@
+         if ($log) {
+             $log->log(Log::INFO, "Executing /usr/sbin/service zend-server {$action}");
+         }
+-        exec("/usr/sbin/service zend-server {$action} 2>&1", $output);
++//        exec("/usr/sbin/service zend-server {$action} 2>&1", $output);
++        exec("/usr/sbin/service zend-server {$action} 2>>/var/log/zs-init.log 1>>/var/log/zs-init.log", $output);
+         if ($log) {
+             $log->log(Log::INFO, "Result: " . PHP_EOL . implode(PHP_EOL, $output));
+         }

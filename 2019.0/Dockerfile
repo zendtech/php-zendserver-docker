@@ -18,7 +18,7 @@ RUN apt-get update \
       libmysqlclient20 \
       unzip \
       git \
-      zend-server=2019.0.4+b392 \
+      zend-server-nginx=2019.0.4+b392 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
@@ -31,11 +31,14 @@ RUN apt-get update \
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
 ENV ZS_INIT_VERSION 0.3
 ENV ZS_INIT_SHA256 e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
+COPY ./zs-init.patch /tmp/zs-init.patch
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \
     && mkdir /usr/local/zs-init \
     && tar xzf zs-init.tar.gz --strip-components=1 -C /usr/local/zs-init \
-    && rm zs-init.tar.gz
+    && rm zs-init.tar.gz \
+    && patch -u /usr/local/zs-init/src/Init/Steps/AbstractStep.php -i /tmp/zs-init.patch \
+    && rm /tmp/zs-init.patch
 
 #Install composer and dependencies for zs-init
 WORKDIR /usr/local/zs-init
@@ -47,7 +50,7 @@ COPY ./scripts /usr/local/bin
 #TODO: Integrate Zray docker plugin into Zend Server
 COPY ./Zray /usr/local/zend/var/plugins/
 
-RUN rm /var/www/html/index.html
+RUN rm /var/www/html/index.nginx-debian.html
 COPY ./app /var/www/html
 
 EXPOSE 80
