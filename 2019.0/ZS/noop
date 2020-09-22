@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function leaveCluster {
+	echo -e "\nNode $1 is exiting (in hurry)\n"
+	ps -eo pid,user,command|grep -E "[z]end|[a]pache|[h]ttpd|[n]ginx"|sed "s/^\s*//"|cut -d" " -f1|xargs kill -9
+	mysql_so=/usr/local/zend/php/active/lib/ext/mysqli.so
+	if [ -f /usr/local/zend/lib/php_extensions/mysqli.so ]; then
+		mysql_so=/usr/local/zend/lib/php_extensions/mysqli.so
+	fi
+	/usr/local/zend/bin/php -nd extension=$mysql_so -f /usr/local/zend/tmp/cluster_exit.php
+	exit 0
+}
+
+if [ "$ZS_CLUSTER" = "TRUE" ]; then
+	. /var/zs-xchange/$HOSTNAME/id.txt
+
+	grep -E '^\s*zend\.database\.' /usr/local/zend/etc/zend_database.ini | grep -v 'journal' | sed -e 's|^\s*zend\.database\.|db|g' -e 's|\s||g' > /usr/local/zend/tmp/zsdb.var
+	. /usr/local/zend/tmp/zsdb.var
+	rm -f /usr/local/zend/tmp/zsdb.var
+	if [ "$dbtype" == "MYSQL" ]; then
+		echo "<?php
+		\$conn = new mysqli('$dbhost_name', '$dbuser', '$dbpassword', '$dbname', $dbport);
+		if (\$conn->mysqli_connect_errno) {
+			echo \"MySQL connection failed. Can't remove myself from the cluster.\n\" . \$conn->connect_error;
+			exit();
+		} else {
+			echo \"Connected to MySQL, will try to remove myself from the cluster.\n\";
+		}
+		\$query = \"delete from ZSD_NODES where NODE_ID = $NODE_ID;\";
+		if (! \$result = \$conn->query(\$query)) {
+			die(\"Node $NODE_ID - $HOSTNAME: SQL Query failed.\n\");
+		}
+		\$result->free();
+		\$conn->close();
+		" > /usr/local/zend/tmp/cluster_exit.php
+	fi
+
+	trap leaveCluster SIGTERM
+	echo -e "---------------------------------------\n|  Ave imperator, Node $NODE_ID te salutat!  |\n---------------------------------------"
+fi
+
+tail -f $0 > /dev/null 2>&1 &
+wait

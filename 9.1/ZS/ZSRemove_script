@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Removing Zend Server $nodeName with ID $nodeID"
+
+/usr/local/zend/bin/zs-client.sh clusterForceRemoveServer --serverId=$nodeID --zsurl="http://zendserver:10081" --zskey=docker --zssecret=$webAPIkey --http="timeout=180" --output-format=kv
+
+
+sleep 2
