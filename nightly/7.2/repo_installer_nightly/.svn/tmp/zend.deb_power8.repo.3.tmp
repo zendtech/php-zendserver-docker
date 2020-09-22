@@ -1,5 +1,0 @@
-<<<<<<< .mine
-deb http://repos-dev.zend.net/zend-server/nightly/deb_power8 server non-free
-=======
-deb http://repos.zend.com/zend-server/9.0/deb_power8 server non-free
->>>>>>> .r106969
