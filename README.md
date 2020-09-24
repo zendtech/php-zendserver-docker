@@ -71,6 +71,11 @@ php-zendserver bash
 Please note, that when running multiple instances only one instance can be bound to a port.
 If you are running a cluster, either assign a port redirect to one node only, or assign a different port to each container.
 
+## Configuration Manipulation
+
+The initialization script will be searching for the directory `/usr/local/zend/tmp/ini-patches`. If this directory exists, the `.ini` files in this directory will be used as directives for patching Zend Server's configuration files. See the (extensively documented with in-line comments) examples in this repository's directory `ini-patches`.
+> **NOTE:** not all of Zend Server's configuration can be changed this way. Some configuration changes require WebAPI - use `$ZS_POST_INIT` for these.
+
 #### Pre init and Post init scripts
 
 - **`ZS_PRE_INIT="/full/path/to/program"`** and
