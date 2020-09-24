@@ -15,7 +15,6 @@ RUN  mv /root/files/ZSinstall.sh /root/ && chmod 775 /root/ZSinstall.sh && sleep
 
 RUN /root/ZSinstall.sh $zs_ver $zs_php $zs_flavor $image $tag $zs_build
 
-RUN rm /var/www/html/index.nginx-debian.html
 COPY app/index.php /var/www/html/
 # Another Example: /root/ZSinstall.sh 2018.0 7.2 apache-fpm debian stretch
 
