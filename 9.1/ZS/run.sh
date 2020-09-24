@@ -49,9 +49,8 @@ bash -c "/usr/local/zend/bin/zendctl.sh start" > /dev/null 2>&1
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD="$(openssl rand -base64 12)"
 fi
-/usr/local/zend/bin/php /usr/local/zend/bin/gui_passwd.php "$ZS_ADMIN_PASSWORD"
-echo "Zend Server GUI Password (for user 'admin'): $ZS_ADMIN_PASSWORD"
-echo
+
+/usr/local/zend/bin/php /usr/local/zend/bin/gui_passwd.php "$ZS_ADMIN_PASSWORD" > /dev/null
 
 # generating a random WebAPI key for 'docker' 
 WEB_API_SECRET="$(tr -cd '0-9a-f' < /dev/urandom | fold -w64 | head -1)"

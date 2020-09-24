@@ -18,7 +18,7 @@ Zend Server is shared on [Docker-Hub] as **php-zendserver**.
 	- 9.1 (PHP 7.1)
 	- 8.5 (PHP 5.6)
 
-  For example: php-zendserver:2019.0.
+  For example: php-zendserver:2019.0
 
 - To start a Zend Server cluster, execute the following command for each cluster node:
 
@@ -38,7 +38,7 @@ php-zendserver bash
 ```
 
 #### Specifying custom password for UI
-- **`ZS_ADMIN_PASSWORD`** can be used to set an 'admin' password for Zend Server UI. If this variable is not specified, a password will be generated and displayed in container's standard output. Therefore, especially if you're running the container in detached mode, your only way of finding out the password is reading the logs:
+- **`ZS_ADMIN_PASSWORD`** can be used to set an 'admin' password for Zend Server UI. If this variable is not specified, a password will be generated and can be read from the logs:
 ```
 docker run --rm -Pd php-zendserver| xargs docker logs -f
 ```
