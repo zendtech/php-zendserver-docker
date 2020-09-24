@@ -1,7 +1,4 @@
-ARG image=ubuntu
-ARG tag=xenial
-
-FROM $image:$tag
+FROM ubuntu:xenial
 
 ARG zs_build=b8
 ARG zs_flavor=nginx
