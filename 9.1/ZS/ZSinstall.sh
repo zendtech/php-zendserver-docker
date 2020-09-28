@@ -11,6 +11,9 @@ alias php='/usr/local/zend/bin/php'
 ZS=/usr/local/zend
 TERM=xterm
 
+# double-check for interactive shell
+if grep i <<< \$- > /dev/null 2>&1; then zsinfo; fi
+
 EOP
 
 LOG_FILE=/tmp/install_zs.log
@@ -20,7 +23,12 @@ PHP=$2
 WEBSRV=$3
 OS=$4
 OSRELEASE=$5
-ZSBUILD=$6
+BUILDNUMBER=$6
+
+PACKAGEVERSION=""
+if [ ! -z "$BUILDNUMBER" ]; then
+	PACKAGEVERSION="=$ZS+$BUILDNUMBER"
+fi
 
 mv /root/files/*.key /root/
 
@@ -47,7 +55,7 @@ packageSuffix=$(echo -e "2018.99.99\n$ZS" | sort -V | head -1 | sed 's|2018\.99\
 
 # Apache + mod_php is not a great idea for Docker, hence no support for this
 if [ "$WEBSRV" = "nginx" ]; then
-	WHAT_TO_INSTALL="zend-server-nginx$packageSuffix=$ZS+$ZSBUILD"
+	WHAT_TO_INSTALL="zend-server-nginx$packageSuffix$PACKAGEVERSION"
 elif [ "$WEBSRV" = "apache-fpm" ]; then
 	WHAT_TO_INSTALL="zend-server-apache-fpm$packageSuffix"
 fi
@@ -90,7 +98,11 @@ verify_deb() {
 		VERIFY_RC=0
 		# shellcheck disable=SC2048
 		for package in $*; do
-				dpkg-query -W -f='${Status}\n' $(echo $package | cut -d '=' -f1) | grep -q ' installed'
+				if [ -z "$PACKAGEVERSION" ]; then 
+					dpkg-query -W -f='${Status}\n' $package | grep -q ' installed'
+				else
+					dpkg-query -W -f='${Status}\n' $(echo $package | cut -d '=' -f1) | grep -q ' installed'
+				fi
 				RC=$?
 				if [ $RC -gt 0 ]; then
 						echo "Package $package is not installed."
@@ -169,6 +181,10 @@ if [ "$isNew" == "yes" ]; then
 else
 	sqlite3 /usr/local/zend/var/db/zsd.db "delete from ZSD_DIRECTIVES; delete from ZSD_EXTENSIONS;"
 fi
+sqlite3 /usr/local/zend/var/db/gui.db "delete from GUI_WEBAPI_KEYS where NAME = 'admin';"
+ZGD=$(find /usr/local/zend/etc -iname ZendGlobalDirectives.ini)
+sed -i -e "s|^\s*zend.serial_number.*\$|zend.serial_number=|" -e "s|^\s*zend.user_name.*\$|zend.user_name=|" $ZGD
+echo > /usr/local/zend/var/log/zsd.log
 
 ln -s /var/www/html /dr
 

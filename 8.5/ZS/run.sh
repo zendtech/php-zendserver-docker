@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# re: metalog.log - OK messages should not normally be displayed
+#                   in container's STDOUT, saving for cluster mode
+
+
 sleep 2
 
 if [ -d /usr/local/zend/tmp/ini-patches ]; then
@@ -16,6 +20,11 @@ if [[ -n $ZS_PRE_INIT ]]; then
 	fi
 fi
 
+# Pre-launch initialization of Zend Server
+. /etc/zce.rc
+$ZCE_PREFIX/bin/zsd $ZCE_PREFIX/etc/zsd.ini -e $(openssl enc -base64 -d -A <<< LS1nZW5lcmF0ZS1saWNlbnNl) > /tmp/metalog.log 2>&1
+
+
 if [[ -n $ZS_ORDER_NUMBER ]]; then
 	cat <<EOST > /root/checLic.php
 <?php
@@ -26,15 +35,16 @@ echo "The license is VALID\n------------------------------\n";
 \$b = \$a['edition'];
 if ( \$b==2 || \$b==7 || \$b==6 || \$b==8 || \$b==3 ) {
 echo "Expires - " . date('j F Y', \$a['expiration_date']) . "\nServers - {\$a['num_of_nodes']}\n------------------------------\n"; exit(0);
-} else { echo "Zend Server edition not recognised. Probably INVALID license.\n\n"; exit(1); }
-} else { echo "This license is INVALID.\n\n"; exit(1); }
+} else { fwrite(STDERR, "Zend Server edition not recognised. Probably INVALID license.\n\n"); exit(1); }
+} else { fwrite(STDERR, "This license is INVALID.\n\n"); exit(1); }
 EOST
-	/usr/local/zend/bin/php -f /root/checLic.php
+
+	/usr/local/zend/bin/php -f /root/checLic.php >> /tmp/metalog.log
+
 	if [ $? -ne 0 ]; then
-		echo "License not changed, will try to continue anyway"
+		echo "License not changed, will try to continue anyway" > /dev/stderr
 	else
 		ZGD=$(find /usr/local/zend/etc -iname ZendGlobalDirectives.ini)
-		. /etc/zce.rc
 		# in ZS 2019.0.0 the table names changed
 		tableName=$(echo -e "2018.99.99\n$PRODUCT_VERSION" | sort -V | head -1 | sed 's|2018\.99\.99|zsd_zend_common_directives|' | sed "s|^[0-9].*$|zsd_directives|")
 		sed -i -e "s|^\s*zend.serial_number.*\$|zend.serial_number=$ZS_LICENSE_KEY|" -e "s|^\s*zend.user_name.*\$|zend.user_name=$ZS_ORDER_NUMBER|" $ZGD
@@ -43,18 +53,19 @@ EOST
 	rm -f /root/checLic.php
 fi
 
-
 bash -c "/usr/local/zend/bin/zendctl.sh start" > /dev/null 2>&1
 
 if [ -z $ZS_ADMIN_PASSWORD ]; then
 	ZS_ADMIN_PASSWORD="$(openssl rand -base64 12)"
 fi
 
-/usr/local/zend/bin/php /usr/local/zend/bin/gui_passwd.php "$ZS_ADMIN_PASSWORD" > /dev/null
+echo "Zend Server GUI Password (for user 'admin'): $ZS_ADMIN_PASSWORD" >> /tmp/metalog.log
+/usr/local/zend/bin/php /usr/local/zend/bin/gui_passwd.php "$ZS_ADMIN_PASSWORD" >> /tmp/metalog.log
+
 
 # generating a random WebAPI key for 'docker' 
 WEB_API_SECRET="$(tr -cd '0-9a-f' < /dev/urandom | fold -w64 | head -1)"
-sqlite3 /usr/local/zend/var/db/gui.db "UPDATE GUI_WEBAPI_KEYS SET HASH='$WEB_API_SECRET' WHERE NAME = 'docker';"
+sqlite3 /usr/local/zend/var/db/gui.db "update GUI_WEBAPI_KEYS set HASH='$WEB_API_SECRET' where NAME = 'docker';"
 
 # if it's the first server, these will be used for the entire cluster
 if [ ! -s /var/zs-xchange/web_api_secret ]; then
@@ -63,6 +74,11 @@ if [ ! -s /var/zs-xchange/web_api_secret ]; then
 fi
 
 if [ "$ZS_CLUSTER" == "TRUE" ] && [ "$ZS_DB_HOST$MYSQL_ROOT_PASSWORD" != "" ]; then
+
+	# license check and change information will be helpful in cluster (compose), outputting now
+	cat /tmp/metalog.log
+	rm -f /tmp/metalog.log
+
 	mkdir /var/zs-xchange/$HOSTNAME
 	NODE_IP=$(dig $HOSTNAME +short)
 	DB_IP=$(dig $ZS_DB_HOST +short)

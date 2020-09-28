@@ -11,6 +11,9 @@ alias php='/usr/local/zend/bin/php'
 ZS=/usr/local/zend
 TERM=xterm
 
+# double-check for interactive shell
+if grep i <<< \$- > /dev/null 2>&1; then zsinfo; fi
+
 EOP
 
 LOG_FILE=/tmp/install_zs.log
@@ -178,6 +181,10 @@ if [ "$isNew" == "yes" ]; then
 else
 	sqlite3 /usr/local/zend/var/db/zsd.db "delete from ZSD_DIRECTIVES; delete from ZSD_EXTENSIONS;"
 fi
+sqlite3 /usr/local/zend/var/db/gui.db "delete from GUI_WEBAPI_KEYS where NAME = 'admin';"
+ZGD=$(find /usr/local/zend/etc -iname ZendGlobalDirectives.ini)
+sed -i -e "s|^\s*zend.serial_number.*\$|zend.serial_number=|" -e "s|^\s*zend.user_name.*\$|zend.user_name=|" $ZGD
+echo > /usr/local/zend/var/log/zsd.log
 
 ln -s /var/www/html /dr
 
