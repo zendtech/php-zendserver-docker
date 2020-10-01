@@ -30,8 +30,6 @@ if [ ! -z "$BUILDNUMBER" ]; then
 	PACKAGEVERSION="=$ZS+$BUILDNUMBER"
 fi
 
-mv /root/files/*.key /root/
-
 OSfull="$OS $OSRELEASE"
 # only Ubuntu and Debian are supported
 if [ "$OSfull" = "debian squeeze" ]; then
@@ -68,7 +66,7 @@ echo "Top packages for installation: $WHAT_TO_INSTALL" >> $LOG_FILE
 if [ "$WEBSRV" = "nginx" ]; then
 	lowest=$(echo -e "9.0\n$ZS" | sort -Vr | head -1)
 	if [ "$lowest" = "9.0" ]; then
-		apt-key add /root/nginx_signing.key
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
 		SOURCE_REPO="deb http://nginx.org/packages/OS/ OSRELEASE nginx"
 		TARGET_REPO_FILE=/etc/apt/sources.list.d/nginx.list
 	else
@@ -89,7 +87,6 @@ REPO_URL="http://repos.zend.com/zend-server/$ZS/$REPO"
 
 # Set repository
 echo "deb $REPO_URL server non-free" > /etc/apt/sources.list.d/zend.list
-apt-key add /root/zend.key
 apt-get update
 
 # Define a fuction to verify deb packages, as we need to verify

@@ -10,6 +10,10 @@ ARG tag=bionic
 EXPOSE 80 443 10081 10082
 
 RUN bash -c 'apt-get update && apt-get -y install curl wget sqlite3 nano net-tools gnupg && apt-get clean'
+
+# Add Zend package repository key:
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
+
 COPY ZS /root/files/
 RUN  mv /root/files/ZSinstall.sh /root/ && chmod 775 /root/ZSinstall.sh && sleep 1
 
