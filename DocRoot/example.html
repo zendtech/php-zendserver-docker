@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Simple page based on Pure.css landing page example. See https://purecss.io/ ">
+    <title>"Lambda" Demonstration</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+    <!-- Essential Part BEGIN -->
+        <div class="splash-container">
+            <div id="center" class="splash">
+                <input id="captcha" type="text" style="width:520px;height:100px;padding:10px;text-align:end;font-size:70px;font-weight:bold;"/>
+                <p class="splash-subhead">
+                    <a onclick="check();" class="pure-button pure-button-primary">Check Solution</a>
+                </p>
+            </div>
+        </div>
+        <script>
+            var correct = Math.floor(Math.random() * Math.floor(99))
+            document.getElementById("captcha").style.background = "url('http://127.0.0.1:9501/get/captcha?sum=" + correct + "')"
+            function check() {
+                var input = document.getElementById("captcha").value
+                if (input == correct) {
+                    document.getElementById("center").innerHTML = '<h1 class="splash-head">Correct!</h1>'
+                } else {
+                    document.getElementById("center").innerHTML = '<h1 class="splash-head">Oops. Try <a href="/example.html">again</a>.</h1>'
+                }
+            }
+        </script>
+    <!-- Essential Part END -->
+    <div class="content-wrapper">
+        <div class="content">
+            <pre style='color:#1f1c1b;background-color:#ffffff;'>
+                <b><span style='color:#0057ae;'>&lt;!DOCTYPE </span></b>html<b><span style='color:#0057ae;'>&gt;</span></b>
+                <b>&lt;html&gt;</b>
+                <b>&lt;head&gt;</b>
+                    <b>&lt;meta</b><span style='color:#006e28;'> charset=</span><span style='color:#bf0303;'>&quot;utf-8&quot;</span><b>&gt;</b>
+                    <b>&lt;meta</b><span style='color:#006e28;'> name=</span><span style='color:#bf0303;'>&quot;description&quot;</span><span style='color:#006e28;'> content=</span><span style='color:#bf0303;'>&quot;Simple page based on Pure.css landing page example. See https://purecss.io/ &quot;</span><b>&gt;</b>
+                    <b>&lt;title&gt;</b>&quot;Lambda&quot; Demonstration<b>&lt;/title&gt;</b>
+                    <b>&lt;link</b><span style='color:#006e28;'> rel=</span><span style='color:#bf0303;'>&quot;stylesheet&quot;</span><span style='color:#006e28;'> href=</span><span style='color:#bf0303;'>&quot;css.css&quot;</span><b>&gt;</b>
+                <b>&lt;/head&gt;</b>
+                <b>&lt;body&gt;</b>
+                    <span style='color:#898887;'>&lt;!-- Essential Part </span><span style='color:#0057ae;background:#e0e9f8;'>BEGIN</span><span style='color:#898887;'> --&gt;</span>
+                        <b>&lt;div</b><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;splash-container&quot;</span><b>&gt;</b>
+                            <b>&lt;div</b><span style='color:#006e28;'> id=</span><span style='color:#bf0303;'>&quot;center&quot;</span><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;splash&quot;</span><b>&gt;</b>
+                                <b>&lt;input</b><span style='color:#006e28;'> id=</span><span style='color:#bf0303;'>&quot;captcha&quot;</span><span style='color:#006e28;'> type=</span><span style='color:#bf0303;'>&quot;text&quot;</span><span style='color:#006e28;'> style=</span><span style='color:#bf0303;'>&quot;width:520px;height:100px;padding:10px;text-align:end;font-size:70px;font-weight:bold;&quot;</span><b>/&gt;</b>
+                                <b>&lt;p</b><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;splash-subhead&quot;</span><b>&gt;</b>
+                                    <b>&lt;a</b><span style='color:#006e28;'> onclick=</span><span style='color:#bf0303;'>&quot;check();&quot;</span><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;pure-button pure-button-primary&quot;</span><b>&gt;</b>Check Solution<b>&lt;/a&gt;</b>
+                                <b>&lt;/p&gt;</b>
+                            <b>&lt;/div&gt;</b>
+                        <b>&lt;/div&gt;</b>
+                        <b>&lt;script&gt;</b>
+                            <b>var</b> correct = <b><span style='color:#644a9b;'>Math</span></b>.<i><span style='color:#644a9b;'>floor</span></i>(<b><span style='color:#644a9b;'>Math</span></b>.<i><span style='color:#644a9b;'>random</span></i>() * <b><span style='color:#644a9b;'>Math</span></b>.<i><span style='color:#644a9b;'>floor</span></i>(<span style='color:#b08000;'>99</span>))
+                            <b><span style='color:#644a9b;'>document</span></b>.<i><span style='color:#644a9b;'>getElementById</span></i>(<span style='color:#bf0303;'>&quot;captcha&quot;</span>).<span style='color:#0057ae;'>style</span>.<span style='color:#0057ae;'>background</span> = <span style='color:#bf0303;'>&quot;url('http://127.0.0.1:9501/get/captcha?sum=&quot;</span> + correct + <span style='color:#bf0303;'>&quot;')&quot;</span>
+                            <b>function</b> <span style='color:#644a9b;'>check</span>() {
+                                <b>var</b> input = <b><span style='color:#644a9b;'>document</span></b>.<i><span style='color:#644a9b;'>getElementById</span></i>(<span style='color:#bf0303;'>&quot;captcha&quot;</span>).<span style='color:#0057ae;'>value</span>
+                                <b>if</b> (input == correct) {
+                                    <b><span style='color:#644a9b;'>document</span></b>.<i><span style='color:#644a9b;'>getElementById</span></i>(<span style='color:#bf0303;'>&quot;center&quot;</span>).<span style='color:#0057ae;'>innerHTML</span> = <span style='color:#bf0303;'>'&lt;h1 class=&quot;splash-head&quot;&gt;Correct!&lt;/h1&gt;'</span>
+                                } <b>else</b> {
+                                    <b><span style='color:#644a9b;'>document</span></b>.<i><span style='color:#644a9b;'>getElementById</span></i>(<span style='color:#bf0303;'>&quot;center&quot;</span>).<span style='color:#0057ae;'>innerHTML</span> = <span style='color:#bf0303;'>'&lt;h1 class=&quot;splash-head&quot;&gt;Oops. Try &lt;a href=&quot;/example.html&quot;&gt;again&lt;/a&gt;.&lt;/h1&gt;'</span>
+                                }
+                            }
+                        <b>&lt;/script&gt;</b>
+                    <span style='color:#898887;'>&lt;!-- Essential Part </span><span style='color:#0057ae;background:#e0e9f8;'>END</span><span style='color:#898887;'> --&gt;</span>
+                    <b>&lt;div</b><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;content-wrapper&quot;</span><b>&gt;</b>
+                        <b>&lt;div</b><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;content&quot;</span><b>&gt;</b>
+                            <span style='color:#898887;'>&lt;!-- source goes here --&gt;</span>
+                        <b>&lt;/div&gt;</b>
+                        <b>&lt;div</b><span style='color:#006e28;'> class=</span><span style='color:#bf0303;'>&quot;footer l-box is-center&quot;</span><b>&gt;</b>
+                            scroll down to see the source code of this page
+                        <b>&lt;/div&gt;</b>
+                    <b>&lt;/div&gt;</b>
+                <b>&lt;/body&gt;</b>
+                <b>&lt;/html&gt;</b></pre>
+        </div>
+        <div class="footer l-box is-center">
+            scroll down to see the source code of this page
+        </div>
+    </div>
+</body>
+</html>

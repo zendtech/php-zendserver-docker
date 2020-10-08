@@ -1,0 +1,147 @@
+version: '3.7'
+
+x-dbroot:
+    &mysql-root-password
+    MYSQL_ROOT_PASSWORD: 'd0ckerTEST'
+
+services:
+    phoenix:
+        # it's just cleaning up shared storage, which we'll use
+        # for deleting nodes from cluster when scaling down
+        image: alpine
+        volumes:
+            - key_hanger:/zs-xchange
+        # tail -f is required so that this container doesn't exit
+        # important for follow up runs of "docker-compose up --scale <smth.>"
+        # otherwise another phoenix start up (and storage cleanup) are attempted
+        # TODO: see whether there is a flag (run-once) that prevents this
+        command: ['sh', '-c', 'rm -rf /zs-xchange/* ; tail -f /dev/null']
+        labels:
+            - traefik.enable=false
+
+    mariadb:
+        image: mariadb:10.3
+        command: ['docker-entrypoint.sh','mysqld']
+        ports:
+            - 3306:3306
+        depends_on: 
+            - phoenix
+        environment: 
+            << : *mysql-root-password
+        labels:
+            - traefik.enable=false
+
+    zendserver:
+        image: php-zendserver:latest
+        command: [nodeWatch]
+        volumes:
+            - key_hanger:/var/zs-xchange
+            - ./DocRoot:/var/www/html
+            - ./ini-patches:/usr/local/zend/tmp/ini-patches
+            - ./post-init.sh:/usr/local/zend/tmp/post-init.sh
+        ports:
+            - 80
+            - 10081
+            # SSL/TLS ports - no point in a simple setup with LB
+            # If needed, TLS can be configured in Traefik
+            #- 443
+            #- 10082
+        depends_on:
+            - mariadb
+        env_file: ./variables.env
+            # variables.env should normally be in .gitignore
+            # it may expose the following environment variables
+            # ZS_ADMIN_PASSWORD (if not set, a random one will be generated)
+            # ZS_ORDER_NUMBER and ZS_LICENSE_KEY (obvious usage)
+        environment:
+            ZS_CLUSTER: 'TRUE'
+            ZS_DB_HOST: 'mariadb'
+            ZS_PRE_INIT: '/var/www/html/pre-init.sh'
+            ZS_POST_INIT: '/usr/local/zend/tmp/post-init.sh'
+            << : *mysql-root-password
+        labels:
+            - traefik.enable=true
+            - traefik.http.services.zs-http.loadbalancer.server.port=80
+
+            - traefik.http.services.zs-http-lb.loadbalancer.server.port=80
+            - traefik.http.services.zs-http-lb.loadbalancer.sticky=true
+            - traefik.http.services.zs-http-lb.loadbalancer.sticky.cookie.name=ZS_HTTP_LB
+            - traefik.http.services.zs-http-lb.loadbalancer.healthcheck.interval=20s
+            - traefik.http.services.zs-http-lb.loadbalancer.healthcheck.path=/
+            - traefik.http.services.zs-http-lb.loadbalancer.healthcheck.timeout=4s
+
+            - traefik.http.services.zs-ui.loadbalancer.server.port=10081
+            - traefik.http.services.zs-ui.loadbalancer.sticky=true
+            - traefik.http.services.zs-ui.loadbalancer.sticky.cookie.name=ZS_UI_LB
+
+            # :80 - Entrypoint "www" -> Router "www-http" -> Service "zs-http"
+            - traefik.http.routers.www-http.rule=HostRegexp(`{any:.*}`)
+            - traefik.http.routers.www-http.entrypoints=www
+            - traefik.http.routers.www-http.service=zs-http
+
+            # HTTP with Load Balancer (for experiments)
+            # :90 - Entrypoint "www-lb" -> Router "www-http-lb" -> Service "zs-http-lb"
+            - traefik.http.routers.www-http-lb.rule=HostRegexp(`{any:.*}`)
+            - traefik.http.routers.www-http-lb.entrypoints=www-lb
+            - traefik.http.routers.www-http-lb.service=zs-http-lb
+
+            # Terminating SSL/TLS at this router
+            # :443 - Entrypoint "secure-www" -> Router "www-https" -> Service "zs-http"
+            - traefik.http.routers.www-https.tls=true
+            - traefik.http.routers.www-https.rule=HostRegexp(`{any:.*}`)
+            - traefik.http.routers.www-https.entrypoints=secure-www
+            - traefik.http.routers.www-https.service=zs-http
+
+            # Not much sense in secure UI in this simple setup, but maybe TODO
+            # :10081 - Entrypoint "ui" -> Router "ui-http" -> Service "zs-ui"
+            - traefik.http.routers.ui-http.rule=HostRegexp(`{any:.*}`)
+            - traefik.http.routers.ui-http.entrypoints=ui
+            - traefik.http.routers.ui-http.service=zs-ui
+
+    lb:
+        image: traefik:2.2
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - key_hanger:/var/zs-xchange
+        command:
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entrypoints.www.address=:80"
+            - "--entrypoints.www-lb.address=:90"
+            - "--entrypoints.secure-www.address=:443"
+            - "--entrypoints.ui.address=:10081"
+        ports:
+            - 8080:8080
+            - 30080:80
+            - 30090:90
+            - 30443:443
+            - 10081:10081
+        depends_on:
+            - 'zendserver'
+
+    lambda:
+        # must not always be latest, but should be
+        image: php-zendserver:latest
+        volumes:
+            - ./lambdas:/lambdas
+        entrypoint: /usr/local/bin/serverless.sh
+        ports:
+            - 9501:9501
+        labels:
+            - traefik.enable=false
+
+    editor:
+        image: theiaide/theia-php
+        init: true
+        volumes:
+            - ./DocRoot:/home/project:cached
+            - ./lambdas:/home/project/lambdas:cached
+        ports:
+            - 3000:3000
+        labels:
+            - traefik.enable=false
+
+
+volumes:
+    key_hanger:

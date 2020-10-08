@@ -1,0 +1,55 @@
+FROM ubuntu:bionic
+EXPOSE 80 443 10081 10082
+
+RUN bash -c 'apt-get update && apt-get -y install curl wget sqlite3 nano net-tools gnupg adduser && apt-get clean'
+COPY ZS /root/files/
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623; \
+    echo "deb http://repos.zend.com/zend-server/2019.0.4/deb_ssl1.1 server non-free" > /etc/apt/sources.list.d/zend.list; \
+    apt-get update && apt-get -y install zend-server-nginx zend-server-common && apt-get clean; \
+    mv /root/files/default_nginx_ssl.conf /etc/nginx/conf.d/; \
+    mkdir /etc/nginx/localhost_certs; \
+    openssl genrsa -out /etc/nginx/localhost_certs/localhost.key 2048; \
+    openssl req -new -x509 -key /etc/nginx/localhost_certs/localhost.key -days 3650 -subj /CN=localhost -out /etc/nginx/localhost_certs/localhost.cert; \
+    chgrp zend /etc/nginx/localhost_certs/localhost.key; \
+    chmod 640 /etc/nginx/localhost_certs/localhost.key; \
+    /usr/local/zend/bin/zendctl.sh stop
+
+# a separate layer for the intialization
+# the WebAPI key is temporary, it is being replaced during container startup
+RUN /usr/local/zend/bin/zendctl.sh start; \
+    /usr/local/zend/bin/zs-manage api-keys-add-key -n docker -s abfcf1870171fd206240f2e2b5291105c204d5aa65ef57d3fc4fa1ec06bfb445; \
+    /usr/local/zend/bin/zs-manage bootstrap-single-server -p DUMMY_PASSWORD -a 'TRUE' -t 3 -w 5; \
+    /usr/local/zend/bin/zs-manage restart -N docker -K abfcf1870171fd206240f2e2b5291105c204d5aa65ef57d3fc4fa1ec06bfb445; \
+    /usr/local/zend/bin/zendctl.sh stop
+
+# yet another layer for cleanup and cluster preparation
+RUN sqlite3 /usr/local/zend/var/db/zsd.db \
+            "delete from ZSD_DIRECTIVES; \
+            delete from ZSD_EXTENSIONS; \
+            delete from ZSD_PHP_EXTENSIONS; \
+            delete from ZSD_PHP_EXTENSIONS_DIRECTIVES; \
+            delete from ZSD_ZEND_COMMON_DIRECTIVES; \
+            delete from ZSD_ZEND_DAEMONS_DIRECTIVES; \
+            delete from ZSD_ZEND_EXTENSIONS; \
+            delete from ZSD_ZEND_EXTENSIONS_DIRECTIVES;"; \
+    sqlite3 /usr/local/zend/var/db/gui.db "delete from GUI_WEBAPI_KEYS where NAME = 'admin';"; \
+    sed -i  -e "s|^\s*zend.serial_number.*\$|zend.serial_number=|" \
+            -e "s|^\s*zend.user_name.*\$|zend.user_name=|" \
+            /usr/local/zend/etc/ZendGlobalDirectives.ini; \
+    echo > /usr/local/zend/var/log/zsd.log; \
+    mv /root/files/* /usr/local/bin/; \
+    chmod +x /usr/local/bin/*; \
+    ln -s /var/www/html /dr; \
+    ln -s /usr/local/zend/bin/php /usr/local/bin/php; \
+    mkdir /var/zs-xchange
+
+COPY extensions/swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run \
+     extensions/inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run \
+     /usr/local/zend/tmp/
+RUN cd /usr/local/zend/tmp && \
+    ./swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run && \
+    ./inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run && \
+    sleep 1
+
+ENTRYPOINT ["/usr/local/bin/run.sh"]
