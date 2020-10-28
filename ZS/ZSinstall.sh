@@ -110,7 +110,7 @@ RC=$?
 echo "Exit code: $RC" >> $LOG_FILE
 verify_deb $WHAT_TO_INSTALL 2> /dev/null
 VERIFY_RC=$?
-apt-get clean
+rm -rf /var/lib/apt/lists/*
 
 
 

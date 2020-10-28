@@ -119,13 +119,16 @@ info: ## Show system info
 all: build single ## Docker build and start configured container
 
 ext: ## Get extension archives from rbzend/extender4zs
-	rm -f "$(HERE)/extensions/"*.run
+	rm -f "$(HERE)extensions/"*.run
+	rm -f "$(HERE)extensions/"*.tgz
 	docker pull rbzend/extender4zs:2019.0.4-7.3-ubuntu-bionic
-	docker run -v "$(HERE)/extensions:/ea" rbzend/extender4zs:2019.0.4-7.3-ubuntu-bionic cp /inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /ea/
+	docker run --rm -v "$(HERE)/extensions:/ea" rbzend/extender4zs:2019.0.4-7.3-ubuntu-bionic cp /inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /ea/
 	docker pull rbzend/extender4zs:9.1.10-7.1-ubuntu-xenial
-	docker run -v "$(HERE)/extensions:/ea" rbzend/extender4zs:9.1.10-7.1-ubuntu-xenial cp ./inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run /swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run /ea/
-	docker pull rbzend/extender4zs:8.5.15-5.6-ubuntu-trusty
-	docker run -v "$(HERE)/extensions:/ea" rbzend/extender4zs:8.5.15-5.6-ubuntu-trusty cp /inotify-ZS_8.5.15-php_5.6-ubuntu_trusty.run /ea/
+	docker run --rm -v "$(HERE)/extensions:/ea" rbzend/extender4zs:9.1.10-7.1-ubuntu-xenial cp ./inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run /swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run /ea/
+	# docker pull rbzend/extender4zs:8.5.15-5.6-ubuntu-trusty
+	# docker run --rm -v "$(HERE)extensions:/ea" rbzend/extender4zs:8.5.15-5.6-ubuntu-trusty cp /inotify-ZS_8.5.15-php_5.6-ubuntu_trusty.run /ea/
+	cd "$(HERE)extensions/"; COPYFILE_DISABLE=1; export COPYFILE_DISABLE; find . -iname "*.run" -exec tar czf "{}.tgz" "{}" \;
+	rm -f "$(HERE)extensions/"*.run
 
 clean: ## Caution: stops and removes all Docker containers
 	@cd "$(HERE)"

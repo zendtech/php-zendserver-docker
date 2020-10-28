@@ -15,7 +15,9 @@ ARG zs_php
 
 EXPOSE 80 443 10081 10082
 
-RUN bash -c 'apt-get update && apt-get -y install curl wget sqlite3 nano net-tools gnupg && apt-get clean'
+RUN apt-get update && \
+    apt-get -y install curl wget sqlite3 nano net-tools gnupg && \
+    rm -rf /var/lib/apt/lists/*
 COPY ZS /root/files/
 
 # This Dockerfile uses an install script rather than a series of

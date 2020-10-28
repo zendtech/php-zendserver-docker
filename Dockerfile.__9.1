@@ -1,12 +1,19 @@
 FROM ubuntu:xenial
 EXPOSE 80 443 10081 10082
 
-RUN bash -c 'apt-get update && apt-get -y install curl wget sqlite3 nano net-tools gnupg adduser && apt-get clean'
+RUN apt-get update && \
+    apt-get -y install curl wget sqlite3 nano net-tools gnupg adduser && \
+    rm -rf /var/lib/apt/lists/*
 COPY ZS /root/files/
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623; \
+RUN set -eu; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    key='799058698E65316A2E7A4FF42EAE1437F7D2C623'; \
+    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+    gpg --batch --export "$key" > /etc/apt/trusted.gpg.d/zend-infra.gpg; \
+    rm -rf "$GNUPGHOME"; \
     echo "deb http://repos.zend.com/zend-server/9.1.10/deb_apache2.4 server non-free" > /etc/apt/sources.list.d/zend.list; \
-    apt-get update && apt-get -y install zend-server-nginx-php-7.1 zend-server-php-7.1-common && apt-get clean; \
+    apt-get update && apt-get -y install zend-server-nginx-php-7.1 zend-server-php-7.1-common && rm -rf /var/lib/apt/lists/*; \
     mv /root/files/default_nginx_ssl.conf /etc/nginx/conf.d/; \
     mkdir /etc/nginx/localhost_certs; \
     openssl genrsa -out /etc/nginx/localhost_certs/localhost.key 2048; \
@@ -36,13 +43,15 @@ RUN sqlite3 /usr/local/zend/var/db/zsd.db "delete from ZSD_DIRECTIVES; delete fr
     ln -s /usr/local/zend/bin/php /usr/local/bin/php; \
     mkdir /var/zs-xchange
 
-COPY extensions/swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run \
-     extensions/inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run \
-     /usr/local/zend/tmp/
-RUN cd /usr/local/zend/tmp && \
-    ./swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run && \
-    ./inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run && \
+ARG SWOOLE=swoole-ZS_9.1.10-php_7.1-ubuntu_xenial
+ARG INOTIFY=inotify-ZS_9.1.10-php_7.1-ubuntu_xenial
+COPY extensions/${SWOOLE}.run.tgz extensions/${INOTIFY}.run.tgz /usr/local/zend/tmp/
+RUN cd /usr/local/zend/tmp; \
+    tar xf ${SWOOLE}.run.tgz; \
+    tar xf ${INOTIFY}.run.tgz; \
+    ./${SWOOLE}.run; \
+    ./${INOTIFY}.run; \
+    rm -rf ${SWOOLE}* ${INOTIFY}*; \
     sleep 1
-
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
