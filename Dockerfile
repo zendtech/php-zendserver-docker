@@ -51,15 +51,13 @@ RUN sqlite3 /usr/local/zend/var/db/zsd.db \
     ln -s /usr/local/zend/bin/php /usr/local/bin/php; \
     mkdir /var/zs-xchange
 
-ARG SWOOLE=swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic
-ARG INOTIFY=inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic
-COPY extensions/${SWOOLE}.run.tgz extensions/${INOTIFY}.run.tgz /usr/local/zend/tmp/
+COPY extensions/swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz extensions/inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz /usr/local/zend/tmp/
 RUN cd /usr/local/zend/tmp; \
-    tar xf ${SWOOLE}.run.tgz; \
-    tar xf ${INOTIFY}.run.tgz; \
-    ./${SWOOLE}.run; \
-    ./${INOTIFY}.run; \
-    rm -rf ${SWOOLE}* ${INOTIFY}*; \
+    tar xf swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz; \
+    tar xf inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz; \
+    ./swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run; \
+    ./inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run; \
+    rm -rf swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic* inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic*; \
     sleep 1
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]

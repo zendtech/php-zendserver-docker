@@ -43,8 +43,6 @@ RUN sqlite3 /usr/local/zend/var/db/zsd.db "delete from ZSD_DIRECTIVES; delete fr
     ln -s /usr/local/zend/bin/php /usr/local/bin/php; \
     mkdir /var/zs-xchange
 
-ARG SWOOLE=swoole-ZS_9.1.10-php_7.1-ubuntu_xenial
-ARG INOTIFY=inotify-ZS_9.1.10-php_7.1-ubuntu_xenial
 COPY extensions/swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run.tgz extensions/inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run.tgz /usr/local/zend/tmp/
 RUN cd /usr/local/zend/tmp; \
     tar xf swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run.tgz; \
