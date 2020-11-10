@@ -12,7 +12,7 @@ RUN set -eu; \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
     gpg --batch --armor --export "$key" > /etc/apt/trusted.gpg.d/zend-infra.gpg.asc; \
     rm -rf "$GNUPGHOME"; \
-    echo "deb http://repos.zend.com/zend-server/2019.0.4/deb_ssl1.1 server non-free" > /etc/apt/sources.list.d/zend.list; \
+    echo "deb http://repos.zend.com/zend-server/2019.0.5/deb_ssl1.1 server non-free" > /etc/apt/sources.list.d/zend.list; \
     apt-get update && apt-get -y install zend-server-nginx zend-server-common && rm -rf /var/lib/apt/lists/*; \
     mv /root/files/default_nginx_ssl.conf /etc/nginx/conf.d/; \
     mkdir /etc/nginx/localhost_certs; \
@@ -51,13 +51,13 @@ RUN sqlite3 /usr/local/zend/var/db/zsd.db \
     ln -s /usr/local/zend/bin/php /usr/local/bin/php; \
     mkdir /var/zs-xchange
 
-COPY extensions/swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz extensions/inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz /usr/local/zend/tmp/
+COPY extensions/swoole-ZS_2019.0.5-php_7.3-ubuntu_bionic.run.tgz extensions/inotify-ZS_2019.0.5-php_7.3-ubuntu_bionic.run.tgz /usr/local/zend/tmp/
 RUN cd /usr/local/zend/tmp; \
-    tar xf swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz; \
-    tar xf inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run.tgz; \
-    ./swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run; \
-    ./inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run; \
-    rm -rf swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic* inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic*; \
+    tar xf swoole-ZS_2019.0.5-php_7.3-ubuntu_bionic.run.tgz; \
+    tar xf inotify-ZS_2019.0.5-php_7.3-ubuntu_bionic.run.tgz; \
+    ./swoole-ZS_2019.0.5-php_7.3-ubuntu_bionic.run; \
+    ./inotify-ZS_2019.0.5-php_7.3-ubuntu_bionic.run; \
+    rm -rf swoole-ZS_2019.0.5-php_7.3-ubuntu_bionic* inotify-ZS_2019.0.5-php_7.3-ubuntu_bionic*; \
     sleep 1
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
