@@ -1,7 +1,7 @@
 ARG image=ubuntu
 ARG tag=bionic
 ARG zs_flavor=nginx
-ARG zs_ver=2019.0.4
+ARG zs_ver=2019.0.5
 ARG zs_php=7.3
 
 FROM zend/artifacts:$zs_ver-$zs_php-$image-$tag as extender

@@ -29,14 +29,14 @@ build-all: ## Build all Docker images
 	@cd "$(HERE)"
 	@echo
 	@echo "\033[92mBuilding Zend Server images...\033[0m"
-	docker build -t zend/php-zendserver:2019.0.4-nginx \
-				-t zend/php-zendserver:2019.0.4 \
+	docker build -t zend/php-zendserver:2019.0.5-nginx \
+				-t zend/php-zendserver:2019.0.5 \
 				-t zend/php-zendserver:2019.0 \
 				-t zend/php-zendserver:latest \
 				-f Dockerfile.custom .
 
 	docker build --build-arg zs_flavor=apache-fpm \
-				-t zend/php-zendserver:2019.0.4-apache \
+				-t zend/php-zendserver:2019.0.5-apache \
 				-f Dockerfile.custom .
 
 	docker build --build-arg image=ubuntu \
@@ -67,10 +67,10 @@ push: ## Push all Docker images
 	@echo
 	@echo "\033[92mPushing Zend Server images...\033[0m"
 	docker push zend/php-zendserver:latest
-	docker push zend/php-zendserver:2019.0.4-nginx
-	docker push zend/php-zendserver:2019.0.4
+	docker push zend/php-zendserver:2019.0.5-nginx
+	docker push zend/php-zendserver:2019.0.5
 	docker push zend/php-zendserver:2019.0
-	docker push zend/php-zendserver:2019.0.4-apache
+	docker push zend/php-zendserver:2019.0.5-apache
 	docker push zend/php-zendserver:9.1.10-nginx
 	docker push zend/php-zendserver:9.1.10
 	docker push zend/php-zendserver:9.1	
@@ -121,8 +121,8 @@ all: build single ## Docker build and start configured container
 ext: ## Get extension archives from rbzend/extender4zs
 	rm -f "$(HERE)extensions/"*.run
 	rm -f "$(HERE)extensions/"*.tgz
-	docker pull rbzend/extender4zs:2019.0.4-7.3-ubuntu-bionic
-	docker run --rm -v "$(HERE)/extensions:/ea" rbzend/extender4zs:2019.0.4-7.3-ubuntu-bionic cp /inotify-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /swoole-ZS_2019.0.4-php_7.3-ubuntu_bionic.run /ea/
+	docker pull rbzend/extender4zs:2019.0.5-7.3-ubuntu-bionic
+	docker run --rm -v "$(HERE)/extensions:/ea" rbzend/extender4zs:2019.0.5-7.3-ubuntu-bionic cp /inotify-ZS_2019.0.5-php_7.3-ubuntu_bionic.run /swoole-ZS_2019.0.5-php_7.3-ubuntu_bionic.run /ea/
 	docker pull rbzend/extender4zs:9.1.10-7.1-ubuntu-xenial
 	docker run --rm -v "$(HERE)/extensions:/ea" rbzend/extender4zs:9.1.10-7.1-ubuntu-xenial cp ./inotify-ZS_9.1.10-php_7.1-ubuntu_xenial.run /swoole-ZS_9.1.10-php_7.1-ubuntu_xenial.run /ea/
 	# docker pull rbzend/extender4zs:8.5.15-5.6-ubuntu-trusty
