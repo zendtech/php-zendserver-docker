@@ -81,6 +81,14 @@ Examples of all of these variables can be found either in `docker-compose.yml` o
 
 		docker run --rm -Pd -e ZS_ADMIN_PASSWORD="SeeStickyN0te" zend/php-zendserver
 
+-	**`ZS_PROFILE`** can be used to set the **development** server profile. The value should be one of: "dev", "DEV", "development" or "DEVELOPMENT". The difference between the  **production** (default) and **development** profiles is detailed in [Server Profiles](https://help.zend.com/zend/Zend-Server-2019.0/content/launch_types.htm).
+
+	> **NOTE:** This operation uses WebAPI to set the server profile follewed by PHP restart. You should be prepared for a startup delay of several seconds, maybe even a minute.
+	
+	For example:
+
+		docker run --rm -Pd -e ZS_PROFILE=development zend/php-zendserver
+
 -	**`ZS_CLUSTER="TRUE"`** can be set to instruct the initialization script to add the server to a cluster, connection to which is defined by the next 2 variables:
 
 	-	**`ZS_DB_HOST`** defines the database host for the database 'ZendServer'. Can be a host name or IP address - either way, it will be converted to an IP address. Custom ports (not 3306) are not supported.
@@ -118,9 +126,10 @@ The intialization script, which is also defined as the image's ENTRYPOINT, is `/
 5.	**Starting Zend Server** - required for next stages.
 6.	**Setting 'admin' password** - see `$ZS_ADMIN_PASSWORD`.
 7.	**Generating a unique WebAPI key** - for user 'docker', it will be used throughout the cluster.
-8.	**Joining the cluster** - if `$ZS_CLUSTER`, `$ZS_DB_HOST` and `$MYSQL_ROOT_PASSWORD` are set;
+8.  **Setting Server Profile** - if defined by means of `$ZS_PROFILE`.
+9.	**Joining the cluster** - if `$ZS_CLUSTER`, `$ZS_DB_HOST` and `$MYSQL_ROOT_PASSWORD` are set;
 	-	at the end - **Zend Server restart** - appears as "Final restart" in the logs.
-9.	**Post-init program** - see `$ZS_POST_INIT`.
+10.	**Post-init program** - see `$ZS_POST_INIT`.
 
 ## Serverless Flavor
 

@@ -86,6 +86,13 @@ sqlite3 /usr/local/zend/var/db/gui.db "update GUI_WEBAPI_KEYS set HASH='$WEB_API
 if [ ! -s /var/zs-xchange/web_api_secret ]; then
 	echo $WEB_API_SECRET > /var/zs-xchange/web_api_secret
 	echo "$ZS_ADMIN_PASSWORD" > /var/zs-xchange/ui_admin_pw
+	chmod 600 /var/zs-xchange/web_api_secret /var/zs-xchange/ui_admin_pw
+	# the below only makes sense in the first node or single server
+	if [[ $ZS_PROFILE =~ ^dev(elopment)*$|^DEV(ELOPMENT)*$ ]]; then
+		echo "Changing server profile to 'development':" >> /tmp/metalog.log
+		/usr/local/bin/zs-client.phar setServerProfile --production=false --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
+		/usr/local/bin/zs-client.phar restartPhp --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
+	fi
 fi
 
 if [ "$ZS_CLUSTER" == "TRUE" ] && [ "$ZS_DB_HOST$MYSQL_ROOT_PASSWORD" != "" ]; then

@@ -178,6 +178,7 @@ echo > /usr/local/zend/var/log/zsd.log
 ln -s /var/www/html /dr
 
 mv /root/files/* /usr/local/bin/
+wget -O /usr/local/bin/zs-client.phar "https://github.com/zend-patterns/ZendServerSDK/raw/master/bin/zs-client.phar"
 chmod +x /usr/local/bin/*
 mkdir /var/zs-xchange
 
