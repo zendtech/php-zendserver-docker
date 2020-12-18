@@ -42,6 +42,7 @@ RUN sqlite3 /usr/local/zend/var/db/zsd.db \
             /usr/local/zend/etc/ZendGlobalDirectives.ini; \
     echo > /usr/local/zend/var/log/zsd.log; \
     mv /root/files/* /usr/local/bin/; \
+    wget -O /usr/local/bin/zs-client.phar "https://github.com/zend-patterns/ZendServerSDK/raw/master/bin/zs-client.phar"; \
     chmod +x /usr/local/bin/*; \
     ln -s /var/www/html /dr; \
     ln -s /usr/local/zend/bin/php /usr/local/bin/php; \

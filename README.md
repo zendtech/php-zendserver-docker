@@ -46,15 +46,15 @@ The cluster is, in fact, behind a load balancer (Traefik), which exposes the fol
 
 In many cases, all you need is just one Zend Server container, for example:
 
-	$ docker run -d -P %%IMAGE%%
+	$ docker run -d -P zend/php-zendserver
 
 or
 
-	$ docker run -d -P %%IMAGE%%:8.5
+	$ docker run -d -P zend/php-zendserver:8.5
 
 The container exposes 4 ports - some of them you may want to publish to your machine's ports:
 
-	$ docker run -d -p8080:80 -p10081:10081 %%IMAGE%%
+	$ docker run -d -p8080:80 -p10081:10081 zend/php-zendserver
 
 This will allow you to access the container's ports directly on the local machine:
 
@@ -71,15 +71,23 @@ Examples of all of these variables can be found either in `docker-compose.yml` o
 		docker run --rm -Pti \
 		    -e ZS_ORDER_NUMBER=102030 \
 		    -e ZS_LICENSE_KEY=1A2B3C4D5E6F7G8H9I0J9K8L7M6N5O4P \
-		%%IMAGE%% bash
+		zend/php-zendserver bash
 
 -	**`ZS_ADMIN_PASSWORD`** can be used to set an 'admin' password for Zend Server UI. If this variable is not specified, a reasonably secure password will be generated. To see the password you can use the `zsinfo` command inside the container:
 
-		docker run --rm -Pti %%IMAGE%% zsinfo
+		docker run --rm -Pti zend/php-zendserver zsinfo
 
 	If you're running the container in detached mode, the easiest way is setting `$ZS_ADMIN_PASSWORD` to a value that you won't forget
 
-		docker run --rm -Pd -e ZS_ADMIN_PASSWORD="SeeStickyN0te" %%IMAGE%%
+		docker run --rm -Pd -e ZS_ADMIN_PASSWORD="SeeStickyN0te" zend/php-zendserver
+
+-	**`ZS_PROFILE`** can be used to set the **development** server profile. The value should be one of: "dev", "DEV", "development" or "DEVELOPMENT". The difference between the  **production** (default) and **development** profiles is detailed in [Server Profiles](https://help.zend.com/zend/Zend-Server-2019.0/content/launch_types.htm).
+
+	> **NOTE:** This operation uses WebAPI to set the server profile follewed by PHP restart. You should be prepared for a startup delay of several seconds, maybe even a minute.
+	
+	For example:
+
+		docker run --rm -Pd -e ZS_PROFILE=development zend/php-zendserver
 
 -	**`ZS_CLUSTER="TRUE"`** can be set to instruct the initialization script to add the server to a cluster, connection to which is defined by the next 2 variables:
 
@@ -90,7 +98,7 @@ Examples of all of these variables can be found either in `docker-compose.yml` o
 			    -e ZS_CLUSTER="TRUE" \
 			    -e ZS_DB_HOST="maria.db.local" \
 			    -e MYSQL_ROOT_PASSWORD="SeeFl!pSide" \
-			%%IMAGE%% bash
+			zend/php-zendserver bash
 
 -	**`ZS_PRE_INIT="/full/path/to/program"`** and
 
@@ -99,7 +107,7 @@ Examples of all of these variables can be found either in `docker-compose.yml` o
 		docker run --rm -Pti \
 		    -v /my/local/updater.sh:/usr/local/bin/upd.sh \
 		    -e ZS_PRE_INIT=/usr/local/bin/upd.sh \
-		%%IMAGE%% bash
+		zend/php-zendserver bash
 
 ## <a name="cnf"></a>Configuration Manipulation
 
@@ -118,9 +126,10 @@ The intialization script, which is also defined as the image's ENTRYPOINT, is `/
 5.	**Starting Zend Server** - required for next stages.
 6.	**Setting 'admin' password** - see `$ZS_ADMIN_PASSWORD`.
 7.	**Generating a unique WebAPI key** - for user 'docker', it will be used throughout the cluster.
-8.	**Joining the cluster** - if `$ZS_CLUSTER`, `$ZS_DB_HOST` and `$MYSQL_ROOT_PASSWORD` are set;
+8.  **Setting Server Profile** - if defined by means of `$ZS_PROFILE`.
+9.	**Joining the cluster** - if `$ZS_CLUSTER`, `$ZS_DB_HOST` and `$MYSQL_ROOT_PASSWORD` are set;
 	-	at the end - **Zend Server restart** - appears as "Final restart" in the logs.
-9.	**Post-init program** - see `$ZS_POST_INIT`.
+10.	**Post-init program** - see `$ZS_POST_INIT`.
 
 ## Serverless Flavor
 
