@@ -90,8 +90,8 @@ if [ ! -s /var/zs-xchange/web_api_secret ]; then
 	# the below only makes sense in the first node or single server
 	if [[ $ZS_PROFILE =~ ^dev(elopment)*$|^DEV(ELOPMENT)*$ ]]; then
 		echo "Changing server profile to 'development':" >> /tmp/metalog.log
-		/usr/local/bin/zs-client.phar setServerProfile --production=false --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
-		/usr/local/bin/zs-client.phar restartPhp --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
+		/usr/local/zend/bin/php /usr/local/bin/zs-client.phar setServerProfile --production=false --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
+		/usr/local/zend/bin/php /usr/local/bin/zs-client.phar restartPhp --output-format=kv --zskey=docker --zssecret=$WEB_API_SECRET >> /tmp/metalog.log 2>&1
 	fi
 fi
 
