@@ -7,7 +7,7 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y \
       gnupg
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
+RUN apt-key adv --fetch-keys http://repos.zend.com/zend.key
 COPY zs2019_0-ssl1.1.list /etc/apt/sources.list.d/zend-server.list
 RUN apt-get update && apt-get install -y \
       iproute2 \
