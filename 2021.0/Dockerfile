@@ -4,12 +4,12 @@
 
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
       gnupg
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 COPY zend-server.list /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
       iproute2 \
       curl \
       libmysqlclient20 \
