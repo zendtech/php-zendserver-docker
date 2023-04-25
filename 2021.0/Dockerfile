@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libmysqlclient20 \
       unzip \
       git \
+      patch \
+      ca-certificates \
       zend-server-nginx=2021.0.0+b74 \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
