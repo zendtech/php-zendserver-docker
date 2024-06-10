@@ -2,20 +2,31 @@
 #
 # Version 2019.0.7+b403
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y \
       gnupg
 
 RUN apt-key adv --fetch-keys http://repos.zend.com/zend.key
 COPY zs2019_0-ssl1.1.list /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y \
+RUN export DEBIAN_FRONTEND=noninteractive \
+    # TODO: Remove when libicu52 is no longer causing issue
+    && echo 'deb http://security.ubuntu.com/ubuntu bionic main' | tee /etc/apt/sources.list.d/bionic.list \
+    # --
+    && apt-get update && apt-get install -y --no-install-recommends \
       iproute2 \
       curl \
-      libmysqlclient20 \
+      ca-certificates \
+      libmysqlclient21 \
       unzip \
       git \
+      patch \
       zend-server-nginx=2019.0.7+b403 \
+      zend-server-common=2019.0.7+b403 \
+      php-bin-zend-server \
+      php-common-extensions-zend-server \
+      php-dev-zend-server \
+      php-intl-zend-server \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
