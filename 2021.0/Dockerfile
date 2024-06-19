@@ -1,21 +1,27 @@
 # Zend Server
 #
-# Version 2021.0.0+b74
+# Version 2021.0.0+b55
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
       gnupg
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
 COPY zend-server.list /etc/apt/sources.list.d/zend-server.list
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update && apt-get install -y --no-install-recommends \
       iproute2 \
       curl \
-      libmysqlclient20 \
+      ca-certificates \
+      libmysqlclient21 \
       unzip \
       git \
-      zend-server-nginx=2021.0.0+b74 \
+      patch \
+      zend-server-nginx=2021.0.0+b55 \
+      zend-server-common=2021.0.0+b55 \
+      php-extra-extensions-zend-server \
+      php-ffi-zend-server \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 

@@ -110,7 +110,7 @@ int main(int argc, const char *argv[])
 
     /* Initialize MySQL connection */
     mysql_init(&mysql);
-    my_bool recon = true;
+    bool recon = true;
     mysql_options(&mysql,MYSQL_OPT_RECONNECT,&recon); /* Set option to auto
                                                        * restart mysql connection */
     if(mysql_real_connect(&mysql,params.mysql_hostname,params.mysql_username,params.mysql_password,NULL,params.mysql_port,NULL,CLIENT_REMEMBER_OPTIONS) == NULL) {
