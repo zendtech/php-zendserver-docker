@@ -1,21 +1,20 @@
 # Zend Server
 #
-# Version 9.1.9+b197
+# Version 9.1.16+b223
 
 FROM ubuntu:16.04
 
 RUN echo "deb http://repos.zend.com/zend-server/9.1/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list
-RUN RUN rm -f /var/lib/apt/lists/*
 RUN apt-get clean && apt-get update && apt-get install -y curl && curl http://repos.zend.com/zend.key | apt-key add - ; apt-get update
-RUN apt-get install -y libmysqlclient18 unzip git zend-server-nginx-php-7.1=9.1.9+b197 && /usr/local/zend/bin/zendctl.sh stop 
+RUN apt-get install -y libmysqlclient20 unzip git zend-server-nginx-php-7.1=9.1.16+b223 && /usr/local/zend/bin/zendctl.sh stop 
 
 #Copy Zend server license for use during build
 COPY ./zend.lic /etc/
 
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
-ENV ZS_INIT_VERSION 0.3
-ENV ZS_INIT_SHA256 e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
+ENV ZS_INIT_VERSION=0.3
+ENV ZS_INIT_SHA256=e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \
     && mkdir /usr/local/zs-init \

@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 2021.0.0+b55
+# Version 2021.4.1+b12
 
 FROM ubuntu:20.04
 
@@ -18,22 +18,17 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       unzip \
       git \
       patch \
-      zend-server-nginx=2021.0.0+b55 \
-      zend-server-common=2021.0.0+b55 \
+      zend-server-nginx=2021.4.1+b12 \
+      zend-server-common=2021.4.1+b12 \
       php-extra-extensions-zend-server \
       php-ffi-zend-server \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
-#Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
-#COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
-#RUN  /usr/sbin/a2enconf drop-http-proxy-header
-#RUN  /usr/sbin/a2enmod headers
-
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
-ENV ZS_INIT_VERSION 0.3
-ENV ZS_INIT_SHA256 e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
+ENV ZS_INIT_VERSION=0.3
+ENV ZS_INIT_SHA256=e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
 COPY ./zs-init.patch /tmp/zs-init.patch
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \

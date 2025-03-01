@@ -1,6 +1,6 @@
 # Zend Server
 #
-# Version 2019.0.7+b403
+# Version 2019.1.7+b51
 
 FROM ubuntu:20.04
 
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
       gnupg
 
 RUN apt-key adv --fetch-keys http://repos.zend.com/zend.key
-COPY zs2019_0-ssl1.1.list /etc/apt/sources.list.d/zend-server.list
+COPY zs2019_1-ssl1.1.list /etc/apt/sources.list.d/zend-server.list
 RUN export DEBIAN_FRONTEND=noninteractive \
     # TODO: Remove when libicu52 is no longer causing issue
     && echo 'deb http://security.ubuntu.com/ubuntu bionic main' | tee /etc/apt/sources.list.d/bionic.list \
@@ -21,8 +21,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
       unzip \
       git \
       patch \
-      zend-server-nginx=2019.0.7+b403 \
-      zend-server-common=2019.0.7+b403 \
+      zend-server-nginx=2019.1.7+b51 \
+      zend-server-common=2019.1.7+b51 \
       php-bin-zend-server \
       php-common-extensions-zend-server \
       php-dev-zend-server \
@@ -30,15 +30,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/* \
     && /usr/local/zend/bin/zendctl.sh stop
 
-#Make apache drop the HTTP_PROXY header to fix CVE-2016-5385, CVE-2016-5387
-#COPY ./drop-http-proxy-header.conf /etc/apache2/conf-available
-#RUN  /usr/sbin/a2enconf drop-http-proxy-header
-#RUN  /usr/sbin/a2enmod headers
-
 # "zs-init" is a standard Zend Server cloud initialization package.
 # It has minor tweaks for use within Docker which can be found at https://github.com/zendtech/zs-init/tree/docker
-ENV ZS_INIT_VERSION 0.3
-ENV ZS_INIT_SHA256 e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
+ENV ZS_INIT_VERSION=0.3
+ENV ZS_INIT_SHA256=e8d441d8503808e9fc0fafc762b2cb80d4a6e68b94fede0fe41efdeac10800cb
 COPY ./zs-init.patch /tmp/zs-init.patch
 RUN curl -fSL -o zs-init.tar.gz "http://repos.zend.com/zs-init/zs-init-docker-${ZS_INIT_VERSION}.tar.gz" \
     && echo "${ZS_INIT_SHA256} *zs-init.tar.gz" | sha256sum -c - \
